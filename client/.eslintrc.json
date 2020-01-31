@@ -11,16 +11,26 @@
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
         },
         "ecmaVersion": 2018,
-        "sourceType": "module"
+        "sourceType": "module",
+        "extends": "standard",
+        "allowImportExportEverywhere": true
     },
     "plugins": [
         "react"
     ],
     "rules": {
+        // Indent with 4 spaces
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "indent": ["error", 4],
+        "import/newline-after-import": ["error", { "count": 1 }],
+        "react/prop-types": 0,
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4]
     }
 }
