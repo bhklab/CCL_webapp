@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 // import axios from 'axios';
 
 // function uploadDocumentRequest({ file, name }) {
@@ -12,19 +13,28 @@ import React, { useState } from 'react';
 //       .catch(error => dispatch(uploadFail(error));
 //   };
 // }
-const onChange = (e) => {
-    // event to update state when form inputs change
-    console.log(e);
-};
-
-const onSubmit = (e) => {
-    e.preventDefault();
-    // event to submit the data to the server
-    console.log(e);
-};
 
 function UploadForm() {
-    const [file, setFile] = useState('');
+    const [file, setFile] = useState(null);
+
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        const data = new FormData();
+        data.append('file', file);
+        axios.post('/api/upload', data, {})
+            .then((res) => {
+                console.log(res.statusText);
+            });
+    };
+
+    const onChange = (e) => {
+        const vcfFile = e.target.files[0];
+        console.log(vcfFile);
+        setFile(vcfFile);
+    };
+
+
     return (
         <form onSubmit={onSubmit}>
             <input
