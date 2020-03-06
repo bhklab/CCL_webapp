@@ -36,7 +36,7 @@ function UploadForm() {
 
 
     return (
-        <form onSubmit={onSubmit}>
+        <form className="main-submit" onSubmit={onSubmit}>
             <input
                 type="file"
                 onChange={onChange}

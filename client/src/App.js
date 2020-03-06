@@ -10,7 +10,7 @@ function App() {
         <div className="App">
             <Normalize />
             <GlobalStyles />
-            <TopNav />
+            {/* <TopNav /> */}
             <Home />
         </div>
     );

@@ -4,10 +4,9 @@ import UploadForm from './UploadForm';
 
 function Home() {
     return (
-        <main className="App">
-            <header className="App-header">
-                <UploadForm />
-            </header>
+        <main className="home-form">
+            <h1>CCLid</h1>
+            <UploadForm />
         </main>
     );
 }
