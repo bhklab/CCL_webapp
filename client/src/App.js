@@ -1,14 +1,17 @@
 import React from 'react';
-import './App.css';
+import { Normalize } from 'styled-normalize';
+import GlobalStyles from './styles/GlobalStyles';
 
-import UploadForm from './components/UploadForm';
+import Home from './components/Main/Home';
+import TopNav from './components/TopNav/TopNav';
 
 function App() {
     return (
         <div className="App">
-            <header className="App-header">
-                <UploadForm />
-            </header>
+            <Normalize />
+            <GlobalStyles />
+            <TopNav />
+            <Home />
         </div>
     );
 }
