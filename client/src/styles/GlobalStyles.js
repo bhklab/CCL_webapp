@@ -1,13 +1,13 @@
 import { createGlobalStyle } from 'styled-components';
 import colors from './colors';
 // import heroImg from '../images/cells-blue.jpg';
-import heroImg from '../images/cells-dark.jpg';
+import heroImg from '../images/dark-blue-red.jpg';
 
 const GlobalStyles = createGlobalStyle`
   
     h1 {
         margin: 0;
-        color: rgb(225, 225, 245);
+        color: #fff;
         text-align:left;
         font-size: calc(5vw + 5em);
         letter-spacing: 3px;
@@ -37,7 +37,8 @@ const GlobalStyles = createGlobalStyle`
     .main-submit {
         background-color: rgb(0,0,0,0.5);
         // background-color: black;
-        border: 2px solid ${colors.header_color};
+        // border: 2px solid ${colors.header_color};
+        border: 5px solid rgb(14, 97, 185);
         border-radius: 35px;
         width: 60%;
         height: 100%;
@@ -57,9 +58,9 @@ const GlobalStyles = createGlobalStyle`
         min-height: 100vh;
         display: flex;
         background: linear-gradient(
-        to top,
-        rgba(255, 255, 255, 0.1), 
-        rgba(0,0,0,0.8)
+        to right,
+        rgba(0, 0, 0, 0), 
+        rgba(0, 0, 0, 0)
         ),url('${heroImg}');
         background-size: cover;
         background-attachment: fixed;
