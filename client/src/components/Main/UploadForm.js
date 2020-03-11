@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 // import axios from 'axios';
 
@@ -16,6 +16,7 @@ import axios from 'axios';
 
 function UploadForm() {
     const [file, setFile] = useState(null);
+    const fileRef = useRef(null);
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -28,20 +29,34 @@ function UploadForm() {
             });
     };
 
+    // when input changes
     const onChange = (e) => {
         const vcfFile = e.target.files[0];
-        console.log(vcfFile);
-        setFile(vcfFile);
+
+        // cancelled
+        if (vcfFile !== undefined) {
+            setFile(vcfFile);
+        }
     };
 
+    // for styling the file input
+    const openFileOption = () => {
+        fileRef.current.click();
+    }
 
     return (
         <form className="main-submit" onSubmit={onSubmit}>
             <input
                 type="file"
+                ref={fileRef}
+                className="input"
                 onChange={onChange}
                 name={file}
             />
+            <a className="choose-file" onClick={openFileOption} >Choose a File</a>
+            <div className="file-uploaded">
+                {file === null || file === undefined ? "No file chosen" : file.name}
+            </div>
             <button type="submit" onSubmit={onSubmit}>Upload</button>
         </form>
     );
