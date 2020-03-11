@@ -1,25 +1,19 @@
 import { createGlobalStyle } from 'styled-components';
 import colors from './colors';
 // import heroImg from '../images/cells-blue.jpg';
-import heroImg from '../images/dark-blue-red.jpg';
+import heroImg from '../images/dark-blue-red-filtered.jpg';
 
 const GlobalStyles = createGlobalStyle`
   
     h1 {
         margin: 0;
-        color: #fff;
+        color: ${colors.pink_main};
         text-align:left;
         font-size: calc(5vw + 5em);
         letter-spacing: 3px;
-    }
-    header {
-        padding: 20px 30px;
-        min-height: 35px;
-        background-color: rgb(0,0,0,0.5);
-        width: 100%;
-        text-align:left;
-        border-bottom: 2px solid ${colors.header_color};
-
+        font-family: 'Sen', sans-serif;
+        font-weight: 700;
+        font-size: calc(5vw + 8em);
     }
     main {
         width: 80%;
@@ -35,17 +29,41 @@ const GlobalStyles = createGlobalStyle`
         width: 100%;
     }
     .main-submit {
-        background-color: rgb(0,0,0,0.5);
-        // background-color: black;
-        // border: 2px solid ${colors.header_color};
-        border: 5px solid rgb(14, 97, 185);
-        border-radius: 35px;
-        width: 60%;
+        background-color: ${colors.pink_main};
+        border-radius: 25px;
+        width: 50%;
         height: 100%;
         margin: 50px 0px 80px 0px;
         padding: 20px;
-        input {
-            background-color: #fff
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: 'Open Sans', sans-serif;
+        font-size: calc(0.5vw + 0.5em);
+        
+        .input {
+            display:none;
+        }
+        button {
+            background: ${colors.darkblue_bg};
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius:10px;
+            font-weight: 600;
+        }
+        .choose-file {
+            background: ${colors.darkblue_bg};
+            color: white;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius:10px;
+            font-weight: 600;
+        }
+        .file-uploaded {
+            color: ${colors.darkblue_text};
+            font-size: calc(0.5vw + 0.6em);
         }
     }
     .top-nav {
