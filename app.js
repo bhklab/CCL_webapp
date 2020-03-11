@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
+const { handleError } = require('./helpers/error');
 
 const router = require('./api/router.js');
 
@@ -25,6 +26,20 @@ app.get('/*', (req, res) => {
 app.use((req, res, next) => {
   next(createError(404));
 });
+
+app.use((err, req, res, next) => {
+  console.log(err);
+  handleError(err, res);
+});
+
+// app.on('error', (err, ctx) => {
+//   /* centralized error handling:
+//    *   console.log error
+//    *   write error to log file
+//    *   save error and request information to database if ctx.request match condition
+//    *   ...
+//   */
+// });
 
 
 const port = process.env.PORT || 5000;
