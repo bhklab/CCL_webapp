@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.log(err);
   handleError(err, res);
+  next();
 });
 
 // app.on('error', (err, ctx) => {

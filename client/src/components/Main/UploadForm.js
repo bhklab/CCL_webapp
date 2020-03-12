@@ -62,19 +62,25 @@ function UploadForm() {
 
     const onSubmit = (e) => {
         e.preventDefault();
-        setUploadResult({ data: null, loading: true, error: null });
-        const data = new FormData();
-        data.append('file', file);
-        axios.post('/api/upload', data, {})
-            .then((res) => {
-                console.log(res.statusText);
-                setUploadResult({ data: null, loading: false, error: null });
-            })
-            .catch((err) => {
-                console.log(err.response);
-                const { message } = err.response.data;
-                setUploadResult({ data: null, loading: false, error: message });
-            });
+        if (file) {
+            setUploadResult({ data: null, loading: true, error: null });
+            const data = new FormData();
+            data.append('file', file);
+            axios.post('/api/upload', data, {})
+                .then((res) => {
+                    // console.log(res.statusText);
+                    setUploadResult({ data: null, loading: false, error: null });
+                })
+                .catch((err) => {
+                    console.log(err.response);
+                    if (err.response.status === 400) {
+                        const { message } = err.response.data;
+                        setUploadResult({ data: null, loading: false, error: message });
+                    } else {
+                        setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
+                    }
+                });
+        }
     };
 
     // when input changes
@@ -103,7 +109,7 @@ function UploadForm() {
                     onChange={onChange}
                     name={file}
                 />
-                <a className="choose-file" onClick={openFileOption}>Choose a File</a>
+                <button type="button" className="choose-file" onClick={openFileOption}>Choose a File</button>
                 <div className="file-uploaded">
                     {file === null || file === undefined ? 'No file chosen' : file.name}
                 </div>
