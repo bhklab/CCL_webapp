@@ -28,44 +28,6 @@ const GlobalStyles = createGlobalStyle`
     .App {
         width: 100%;
     }
-    .main-submit {
-        background-color: ${colors.pink_main};
-        border-radius: 25px;
-        width: 50%;
-        height: 100%;
-        margin: 50px 0px 80px 0px;
-        padding: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-family: 'Open Sans', sans-serif;
-        font-size: calc(0.5vw + 0.5em);
-        
-        .input {
-            display:none;
-        }
-        button {
-            background: ${colors.darkblue_bg};
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 8px 10px;
-            border-radius:10px;
-            font-weight: 600;
-        }
-        .choose-file {
-            background: ${colors.darkblue_bg};
-            color: white;
-            cursor: pointer;
-            padding: 8px 10px;
-            border-radius:10px;
-            font-weight: 600;
-        }
-        .file-uploaded {
-            color: ${colors.darkblue_text};
-            font-size: calc(0.5vw + 0.6em);
-        }
-    }
     .top-nav {
         h1 {
             text-align: left;
