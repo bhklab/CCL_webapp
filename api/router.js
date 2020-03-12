@@ -41,8 +41,9 @@ router.post('/upload', upload.single('file'), (req, res) => {
       .on('data', (feature) => {
         requestObj.push(feature);
       }).on('error', (err) => {
-        error = err
-        res.status(400).json({error: 'Error reading vcf file'})
+        // error = err
+        // res.status(400).json({error: 'Error reading vcf file'})
+        new ErrorHandler(400, 'Error reading vcf file')
       })
       .once('end', () => {
         if (!error) {
@@ -50,7 +51,10 @@ router.post('/upload', upload.single('file'), (req, res) => {
           console.log(requestObj[0]);
           console.log('finished');
         }
-      });
+      })
+      .catch(err => {
+        console.log(err);
+      })
   } catch(err) {
     console.log('here');
   }

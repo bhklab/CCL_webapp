@@ -15,7 +15,7 @@ const StyledForm = styled.div`
     align-items: center;
 
     .error {
-        color: #E80000;
+        color: ${colors.red_error};
         font-weight: 700;
     }
 

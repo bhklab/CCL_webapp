@@ -8,6 +8,12 @@ const router = require('./api/router.js');
 
 const app = express();
 
+// process.on('uncaughtException', (err) => {
+//   console.error(err);
+//   console.log('Node NOT Exiting...');
+//   console.log(err.message);
+// });
+
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
