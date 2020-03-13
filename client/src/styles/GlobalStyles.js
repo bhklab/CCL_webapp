@@ -12,7 +12,7 @@ const GlobalStyles = createGlobalStyle`
         font-size: calc(5vw + 5em);
         letter-spacing: 3px;
         font-family: 'Sen', sans-serif;
-        font-weight: 700;
+        font-weight: 400;
         font-size: calc(5vw + 8em);
     }
     main {
