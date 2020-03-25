@@ -3,6 +3,7 @@
 const express = require('express');
 const multer = require('multer');
 const vcf = require('bionode-vcf');
+const axios = require('axios');
 const { Readable } = require('stream');
 const { ErrorHandler } = require('../helpers/error');
 
@@ -46,9 +47,15 @@ router.post('/upload', upload.single('file'), (req, res) => {
         new ErrorHandler(400, 'Error reading vcf file');
       })
       .once('end', () => {
-        res.status(200).json({ message: 'Upload' });
-        console.log(requestObj[0]);
-        console.log('finished');
+        // making post request to opencpu server
+        axios.post('http://52.138.39.182/ocpu/library/CCLid/R/test/', {
+          list: requestObj,
+        })
+          .then((resp) => {
+            console.log(resp);
+            console.log('finished');
+          });
+        res.status(200).json(requestObj);
       })
       .catch((err) => {
         console.log(err);

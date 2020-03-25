@@ -68,7 +68,7 @@ function UploadForm() {
             data.append('file', file);
             axios.post('/api/upload', data, {})
                 .then((res) => {
-                    // console.log(res.statusText);
+                    console.log(res);
                     setUploadResult({ data: null, loading: false, error: null });
                 })
                 .catch((err) => {
