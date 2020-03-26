@@ -1,12 +1,12 @@
+/* eslint-disable no-new */
 /* eslint-disable no-console */
 /* eslint-disable consistent-return */
 const express = require('express');
 const multer = require('multer');
 const vcf = require('bionode-vcf');
-const axios = require('axios');
 const { Readable } = require('stream');
+const uploadToOpenCPU = require('../helpers/uploadToOpenCPU');
 const { ErrorHandler } = require('../helpers/error');
-
 
 // converts mutler file from buffer into readableStream
 // it's required for bionode library
@@ -43,18 +43,11 @@ router.post('/upload', upload.single('file'), (req, res) => {
         requestObj.push(feature);
       }).on('error', (err) => {
         console.log(err);
-        // eslint-disable-next-line no-new
         new ErrorHandler(400, 'Error reading vcf file');
       })
       .once('end', () => {
         // making post request to opencpu server
-        axios.post('http://52.138.39.182/ocpu/library/CCLid/R/test/', {
-          list: requestObj,
-        })
-          .then((resp) => {
-            console.log(resp);
-            console.log('finished');
-          });
+        uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLid/R/test/', requestObj);
         res.status(200).json(requestObj);
       })
       .catch((err) => {
