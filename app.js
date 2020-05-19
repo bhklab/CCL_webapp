@@ -3,7 +3,10 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
+const dotenv = require('dotenv');
 const { handleError } = require('./helpers/error');
+
+dotenv.config();
 
 const router = require('./api/router.js');
 
@@ -50,7 +53,7 @@ app.use((err, req, res, next) => {
 // });
 
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8080;
 
 // start the server using port 5000.
 app.listen(port, () => {

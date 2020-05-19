@@ -47,7 +47,8 @@ router.post('/upload', upload.single('file'), (req, res) => {
       })
       .once('end', () => {
         // making post request to opencpu server
-        uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLid/R/test/', requestObj);
+        // uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLid/R/test/', requestObj);
+        uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLWebInterface/R/web_interface/json', requestObj);
         res.status(200).json(requestObj);
       })
       .catch((err) => {
