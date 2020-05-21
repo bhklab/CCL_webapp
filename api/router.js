@@ -67,10 +67,17 @@ router.get('/', (req, res) => {
 	R(script)
 		.call(function (err, d) {
 			if (err) {
-				const buf = err.toString('utf8');
-				throw buf;
+				try {
+					const buf = err.toString('utf8');
+					console.log('buffer', buf);
+				} catch (e) {
+					if (e instanceof SyntaxError) {
+						// Output expected SyntaxErrors.
+						console.log(e);
+					}
+				}
 			} 
-			console.log(d);
+			console.log('data');
 		});
 
 	// const out = R('../R/interface.R')
