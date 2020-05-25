@@ -64,30 +64,21 @@ router.post('/upload', upload.single('file'), (req, res) => {
 router.get('/', (req, res) => {
 	console.log('received request');
 	const script = path.join(__dirname, 'R', 'interface.R');
+	// calling R script to run CCLid analysis
 	R(script)
 		.call(function (err, d) {
 			if (err) {
-				try {
-					const buf = err.toString('utf8');
-					console.log('buffer', buf);
-				} catch (e) {
-					if (e instanceof SyntaxError) {
-						// Output expected SyntaxErrors.
-						console.log(e);
-					}
-				}
-			} 
-			console.log('data');
-		});
-
-	// const out = R('../R/interface.R')
-	// 	.data('random data')
-	// 	.call(function (err, d) {
-	// 		if (err) throw err;
-	// 		console.log(d);
-	// 	});
-	// console.log(out);
-	res.json({ message: 'Success' });
+				// analysis creates regular progress messages which are registered as errors by r-script 
+				const buf = err.toString('utf8');
+				console.log('message', buf);
+			}
+			if (d) {
+				console.log('data', d);			
+				res.status(200).json({ data: d });
+			} else {
+				res.status(400).json({ message: 'Error processing the request'});
+			}
+		});	
 });
 
 
