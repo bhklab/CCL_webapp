@@ -72,10 +72,11 @@ router.get('/', (req, res) => {
 				const buf = err.toString('utf8');
 				console.log('message', buf);
 			}
-			if (d) {
+
+			if (d && d.results) {
 				console.log('data', d);			
 				res.status(200).json({ data: d });
-			} else {
+			} else if (d) {
 				res.status(400).json({ message: 'Error processing the request'});
 			}
 		});	

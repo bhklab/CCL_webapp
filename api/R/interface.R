@@ -60,7 +60,8 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
     }
     
 
-    dat <- list("pred"=pred,
+    dat <- list("results"=TRUE,
+                "pred"=pred,
                 "seg"=bdf$cna.obj[[1]]$output,
                 "fraction"=bdf$frac[[1]])
     return(dat)
