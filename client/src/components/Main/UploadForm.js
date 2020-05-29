@@ -60,6 +60,13 @@ function UploadForm() {
     const [file, setFile] = useState(null);
     const fileRef = useRef(null);
 
+    const getExampleData = () => {
+        axios.get('/api')
+            .then((res) => {
+                console.log(res);
+            })
+    }
+
     const onSubmit = (e) => {
         e.preventDefault();
         if (file) {
@@ -114,6 +121,7 @@ function UploadForm() {
                     {file === null || file === undefined ? 'No file chosen' : file.name}
                 </div>
                 <button type="submit" onSubmit={onSubmit}>Upload</button>
+                <button type="button" onClick={getExampleData}>Test Data</button>
             </form>
             {uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
         </StyledForm>
