@@ -60,14 +60,12 @@ const columns = [
     Header: 't',
     accessor: 't',
   },
-
 ]
 
 function Segmentation(props) {
   const { data } = props;
-  console.log(data);
+  // removes '.' from R generated object
   const standardizedData = standardizeROutput(data);
-  console.log(standardizedData)
   return (
     <StyledSegmentation>
       <h3>Segmentation</h3>

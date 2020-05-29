@@ -1,7 +1,7 @@
 // removes '.' from the object key names
 const renameKeys = (obj, newKeys) => {
   const keyValues = Object.keys(obj).map(key => {
-    const newKey = key.includes(".") ? key.replace(".", "") : key;
+    const newKey = key.includes(".") ? key.replace(/\./g, "") : key;
     return { [newKey]: obj[key] };
   });
   return Object.assign({}, ...keyValues);
