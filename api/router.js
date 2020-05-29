@@ -64,6 +64,11 @@ router.post('/upload', upload.single('file'), (req, res) => {
 });
 
 router.get('/', (req, res) => {
+  res.status(200).json(responseData);
+});
+
+
+router.get('/upload', (req, res) => {
   console.log('received request');
   const script = path.join(__dirname, 'R', 'interface.R');
   if (process.env.ENV === 'production') {
