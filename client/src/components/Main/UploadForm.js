@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import colors from '../../styles/colors';
+
+import AnalysisContext from '../Context/AnalysisContext';
 
 const StyledForm = styled.div`
     background-color: ${colors.pink_main};
@@ -59,11 +61,14 @@ function UploadForm() {
     const [uploadResult, setUploadResult] = useState({ data: null, loading: false, error: null });
     const [file, setFile] = useState(null);
     const fileRef = useRef(null);
+    const {analysisState, setAnalysisState} = useContext(AnalysisContext);
 
     const getExampleData = () => {
+        setAnalysisState({data: null, loading: true})
         axios.get('/api')
             .then((res) => {
-                console.log(res);
+                // setUploadResult({ data: res.data, loading: false, error: null });
+                setAnalysisState({data: res.data, loading: false})
             })
     }
 
