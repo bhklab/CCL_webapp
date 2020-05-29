@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import UploadForm from './UploadForm';
-import Analysis from './Analysis';
+import Analysis from './Analysis/Analysis';
 import AnalysisContext from '../Context/AnalysisContext'
 
 function Home() {
