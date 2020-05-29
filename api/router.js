@@ -5,10 +5,12 @@ const express = require('express');
 const multer = require('multer');
 const vcf = require('bionode-vcf');
 const { Readable } = require('stream');
-const uploadToOpenCPU = require('../helpers/uploadToOpenCPU');
-const { ErrorHandler } = require('../helpers/error');
 const R = require('r-script');
 const path = require('path');
+const uploadToOpenCPU = require('../helpers/uploadToOpenCPU');
+const { ErrorHandler } = require('../helpers/error');
+
+const responseData = require('./example-data/results.json');
 
 // converts mutler file from buffer into readableStream
 // it's required for bionode library
@@ -62,24 +64,32 @@ router.post('/upload', upload.single('file'), (req, res) => {
 });
 
 router.get('/', (req, res) => {
+	res.status(200).json(responseData);
+});
+
+
+router.get('/upload', (req, res) => {
 	console.log('received request');
 	const script = path.join(__dirname, 'R', 'interface.R');
-	// calling R script to run CCLid analysis
-	R(script)
-		.call(function (err, d) {
-			if (err) {
-				// analysis creates regular progress messages which are registered as errors by r-script 
-				const buf = err.toString('utf8');
-				console.log('message', buf);
-			}
-
-			if (d && d.results) {
-				console.log('data', d);			
-				res.status(200).json({ data: d });
-			} else if (d) {
-				res.status(400).json({ message: 'Error processing the request'});
-			}
-		});	
+	if (process.env.ENV === 'production') {
+		// calling R script to run CCLid analysis
+		R(script)
+			.call((err, d) => {
+				if (err) {
+					// analysis creates regular progress messages which are registered as errors by r-script
+					const buf = err.toString('utf8');
+					console.log('message', buf);
+				}
+				if (d && d.results) {
+					console.log('data', d);
+					res.status(200).json(d);
+				} else if (d) {
+					res.status(400).json({ message: 'Error processing the request' });
+				}
+			});
+	} else {
+		res.status(200).json(responseData);
+	}
 });
 
 

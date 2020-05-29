@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import colors from '../../styles/colors';
+
+import AnalysisContext from '../Context/AnalysisContext';
 
 const StyledForm = styled.div`
     background-color: ${colors.pink_main};
@@ -59,6 +61,16 @@ function UploadForm() {
     const [uploadResult, setUploadResult] = useState({ data: null, loading: false, error: null });
     const [file, setFile] = useState(null);
     const fileRef = useRef(null);
+    const {analysisState, setAnalysisState} = useContext(AnalysisContext);
+
+    const getExampleData = () => {
+        setAnalysisState({data: null, loading: true})
+        axios.get('/api')
+            .then((res) => {
+                // setUploadResult({ data: res.data, loading: false, error: null });
+                setAnalysisState({data: res.data, loading: false})
+            })
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -66,18 +78,22 @@ function UploadForm() {
             setUploadResult({ data: null, loading: true, error: null });
             const data = new FormData();
             data.append('file', file);
-            axios.post('/api/upload', data, {})
+            // axios.post('/api/upload', data, {})
+            axios.get('/api/upload')
                 .then((res) => {
                     console.log(res);
-                    setUploadResult({ data: null, loading: false, error: null });
+                    setAnalysisState({ data: res.data, loading: false })
+                    // setUploadResult({ data: null, loading: false, error: null });
                 })
                 .catch((err) => {
                     console.log(err.response);
                     if (err.response.status === 400) {
                         const { message } = err.response.data;
-                        setUploadResult({ data: null, loading: false, error: message });
+                        // setUploadResult({ data: null, loading: false, error: message });
+                        setAnalysisState({ data: null, loading: false, error: message })
                     } else {
-                        setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
+                        // setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
+                        setAnalysisState({ data: null, loading: false, error: 'Something went wrong' })
                     }
                 });
         }
@@ -114,6 +130,7 @@ function UploadForm() {
                     {file === null || file === undefined ? 'No file chosen' : file.name}
                 </div>
                 <button type="submit" onSubmit={onSubmit}>Upload</button>
+                <button type="button" onClick={getExampleData}>Test Data</button>
             </form>
             {uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
         </StyledForm>
