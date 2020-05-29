@@ -78,18 +78,22 @@ function UploadForm() {
             setUploadResult({ data: null, loading: true, error: null });
             const data = new FormData();
             data.append('file', file);
-            axios.post('/api/upload', data, {})
+            // axios.post('/api/upload', data, {})
+            axios.get('/api')
                 .then((res) => {
                     console.log(res);
-                    setUploadResult({ data: null, loading: false, error: null });
+                    setAnalysisState({ data: res.data, loading: false })
+                    // setUploadResult({ data: null, loading: false, error: null });
                 })
                 .catch((err) => {
                     console.log(err.response);
                     if (err.response.status === 400) {
                         const { message } = err.response.data;
-                        setUploadResult({ data: null, loading: false, error: message });
+                        // setUploadResult({ data: null, loading: false, error: message });
+                        setAnalysisState({ data: null, loading: false, error: message })
                     } else {
-                        setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
+                        // setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
+                        setAnalysisState({ data: null, loading: false, error: 'Something went wrong' })
                     }
                 });
         }
