@@ -78,8 +78,8 @@ function UploadForm() {
             setUploadResult({ data: null, loading: true, error: null });
             const data = new FormData();
             data.append('file', file);
-            // axios.post('/api/upload', data, {})
-            axios.get('/api/upload')
+            axios.post('/api/upload', data, {})
+            // axios.get('/api/upload')
                 .then((res) => {
                     console.log(res);
                     setAnalysisState({ data: res.data, loading: false })
