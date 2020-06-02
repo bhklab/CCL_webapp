@@ -29,7 +29,7 @@ const router = express.Router();
 // }
 
 router.get('/', (req, res) => {
-  res.status(200).json(responseData);
+	res.status(200).json(responseData);
 });
 
 // Loads file into bufffer rather than saving it on VM
@@ -46,78 +46,88 @@ router.get('/', (req, res) => {
 // assigns directory and creates it in the file system if it doesn't exist
 const saveDirectory = '/tmp/cclid-uploads';
 if (!fs.existsSync(saveDirectory)) {
-  fs.mkdirSync(saveDirectory);
+	fs.mkdirSync(saveDirectory);
 }
 
 const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, saveDirectory);
-  },
-  filename(req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}.vcf`);
-  },
+	destination(req, file, cb) {
+		cb(null, saveDirectory);
+	},
+	filename(req, file, cb) {
+		cb(null, `${file.fieldname}-${Date.now()}.vcf`);
+	},
 });
 
 const upload = multer({
-  storage,
-  fileFilter(req, file, cb) {
-    if (!file.originalname.match(/\.vcf$/)) {
-      return cb(new ErrorHandler(400, 'Only vcf files are allowed!'));
-    }
-    cb(null, true);
-  },
+	storage,
+	fileFilter(req, file, cb) {
+		if (!file.originalname.match(/\.vcf$/)) {
+			return cb(new ErrorHandler(400, 'Only vcf files are allowed!'));
+		}
+		cb(null, true);
+	},
 });
 
 router.post('/upload', upload.single('file'), (req, res) => {
-  try {
-    console.log('Received file');
-    const filePath = req.file.path;
-    console.log(filePath);
-    res.status(200).json(responseData);
-    // vcf.readStream(bufferToStream(req.file.buffer), 'vcf')
-    //   .on('data', (feature) => {
-    //     requestObj.push(feature);
-    //   }).on('error', (err) => {
-    //     console.log(err);
-    //     new ErrorHandler(400, 'Error reading vcf file');
-    //   })
-    //   .once('end', () => {
-    //     // making post request to opencpu server
-    //     // uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLid/R/test/', requestObj);
-    //     uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLWebInterface/R/web_interface/json', requestObj);
-    //     res.status(200).json(requestObj);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-  } catch (err) {
-    console.log('here', err);
-  }
+	try {
+		console.log('Received and saved file');
+		const filePath = req.file.path;
+		console.log(filePath);
+		res.status(200).json(responseData);
+		const script = path.join(__dirname, 'R', 'interface.R');
+		R(script)
+			.data('some file path')
+			.call((err, d) => {
+				if (err) {
+					const buf = err.toString('utf8');
+					console.log('error', buf);
+				}
+				console.log('data', d);
+			});
+		// vcf.readStream(bufferToStream(req.file.buffer), 'vcf')
+		//   .on('data', (feature) => {
+		//     requestObj.push(feature);
+		//   }).on('error', (err) => {
+		//     console.log(err);
+		//     new ErrorHandler(400, 'Error reading vcf file');
+		//   })
+		//   .once('end', () => {
+		//     // making post request to opencpu server
+		//     // uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLid/R/test/', requestObj);
+		//     uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLWebInterface/R/web_interface/json', requestObj);
+		//     res.status(200).json(requestObj);
+		//   })
+		//   .catch((err) => {
+		//     console.log(err);
+		//   });
+	} catch (err) {
+		console.log('here', err);
+	}
 });
 
 
 router.get('/upload', (req, res) => {
-  console.log('received request');
-  const script = path.join(__dirname, 'R', 'interface.R');
-  if (process.env.ENV === 'production') {
-    // calling R script to run CCLid analysis
-    R(script)
-      .call((err, d) => {
-        if (err) {
-          // analysis creates regular progress messages which are registered as errors by r-script
-          const buf = err.toString('utf8');
-          console.log('message', buf);
-        }
-        if (d && d.results) {
-          console.log('data', d);
-          res.status(200).json(d);
-        } else if (d) {
-          res.status(400).json({ message: 'Error processing the request' });
-        }
-      });
-  } else {
-    res.status(200).json(responseData);
-  }
+	console.log('received request');
+	const script = path.join(__dirname, 'R', 'interface.R');
+	if (process.env.ENV === 'production') {
+		// calling R script to run CCLid analysis
+		R(script)
+			.call((err, d) => {
+				if (err) {
+					// analysis creates regular progress messages which are registered as errors by r-script
+					const buf = err.toString('utf8');
+					console.log('message', buf);
+				}
+				if (d && d.results) {
+					console.log('data', d);
+					res.status(200).json(d);
+				} else if (d) {
+					res.status(400).json({ message: 'Error processing the request' });
+				}
+			});
+	} else {
+		res.status(200).json(responseData);
+	}
 });
 
 

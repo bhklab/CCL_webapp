@@ -58,85 +58,84 @@ const StyledForm = styled.div`
 
 
 function UploadForm() {
-    const [uploadResult, setUploadResult] = useState({ data: null, loading: false, error: null });
-    const [file, setFile] = useState(null);
-    const fileRef = useRef(null);
-    const {analysisState, setAnalysisState} = useContext(AnalysisContext);
+	const [uploadResult, setUploadResult] = useState({ data: null, loading: false, error: null });
+	const [file, setFile] = useState(null);
+	const fileRef = useRef(null);
+	const {analysisState, setAnalysisState} = useContext(AnalysisContext);
 
-    const getExampleData = () => {
-        setAnalysisState({data: null, loading: true})
-        axios.get('/api')
-            .then((res) => {
-                // setUploadResult({ data: res.data, loading: false, error: null });
-                setAnalysisState({data: res.data, loading: false})
-            })
-    }
+	const getExampleData = () => {
+		setAnalysisState({data: null, loading: true});
+		axios.get('/api')
+			.then((res) => {
+				// setUploadResult({ data: res.data, loading: false, error: null });
+				setAnalysisState({data: res.data, loading: false});
+			});
+	};
 
-    const onSubmit = (e) => {
-        e.preventDefault();
-        if (file) {
-            setUploadResult({ data: null, loading: true, error: null });
-            const data = new FormData();
-            data.append('file', file);
-            axios.post('/api/upload', data, {})
-            // axios.get('/api/upload')
-                .then((res) => {
-                    console.log(res);
-                    setAnalysisState({ data: res.data, loading: false })
-                    // setUploadResult({ data: null, loading: false, error: null });
-                })
-                .catch((err) => {
-                    console.log(err.response);
-                    if (err.response.status === 400) {
-                        const { message } = err.response.data;
-                        // setUploadResult({ data: null, loading: false, error: message });
-                        setAnalysisState({ data: null, loading: false, error: message })
-                    } else {
-                        // setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
-                        setAnalysisState({ data: null, loading: false, error: 'Something went wrong' })
-                    }
-                });
-        }
-    };
+	const onSubmit = (e) => {
+		e.preventDefault();
+		if (file) {
+			setUploadResult({ data: null, loading: true, error: null });
+			const data = new FormData();
+			data.append('file', file);
+			axios.post('/api/upload', data, {})
+			// axios.get('/api/upload')
+				.then((res) => {
+					console.log(res);
+					setAnalysisState({ data: res.data, loading: false });
+					// setUploadResult({ data: null, loading: false, error: null });
+				})
+				.catch((err) => {
+					console.log(err.response);
+					if (err.response.status === 400) {
+						const { message } = err.response.data;
+						// setUploadResult({ data: null, loading: false, error: message });
+						setAnalysisState({ data: null, loading: false, error: message });
+					} else {
+						// setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
+						setAnalysisState({ data: null, loading: false, error: 'Something went wrong' });
+					}
+				});
+		}
+	};
 
-    // when input changes
-    const onChange = (e) => {
-        const vcfFile = e.target.files[0];
+	// when input changes
+	const onChange = (e) => {
+		const vcfFile = e.target.files[0];
 
-        // cancelled
-        if (vcfFile !== undefined) {
-            setFile(vcfFile);
-        }
-    };
+		// cancelled
+		if (vcfFile !== undefined) {
+			setFile(vcfFile);
+		}
+	};
 
-    // for styling the file input
-    const openFileOption = () => {
-        fileRef.current.click();
-    };
+	// for styling the file input
+	const openFileOption = () => {
+		fileRef.current.click();
+	};
 
-    return (
-        <StyledForm>
+	return (
+		<StyledForm>
+			<form className="main-submit" onSubmit={onSubmit}>
+				<input
+					type="file"
+					ref={fileRef}
+					className="input"
+					onChange={onChange}
+					name={file}
+				/>
+				<button type="button" className="choose-file" onClick={openFileOption}>Choose a File</button>
+				<div className="file-uploaded">
+					{file === null || file === undefined ? 'No file chosen' : file.name}
+				</div>
+				<button type="submit" onSubmit={onSubmit}>Upload</button>
+				<button type="button" onClick={getExampleData}>Test Data</button>
+			</form>
+			{uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
+		</StyledForm>
 
-            <form className="main-submit" onSubmit={onSubmit}>
-                <input
-                    type="file"
-                    ref={fileRef}
-                    className="input"
-                    onChange={onChange}
-                    name={file}
-                />
-                <button type="button" className="choose-file" onClick={openFileOption}>Choose a File</button>
-                <div className="file-uploaded">
-                    {file === null || file === undefined ? 'No file chosen' : file.name}
-                </div>
-                <button type="submit" onSubmit={onSubmit}>Upload</button>
-                <button type="button" onClick={getExampleData}>Test Data</button>
-            </form>
-            {uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
-        </StyledForm>
 
-
-    );
+	);
 }
 
 export default UploadForm;
