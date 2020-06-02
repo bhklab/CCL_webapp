@@ -73,33 +73,22 @@ router.post('/upload', upload.single('file'), (req, res) => {
 		console.log('Received and saved file');
 		const filePath = req.file.path;
 		console.log(filePath);
-		res.status(200).json(responseData);
 		const script = path.join(__dirname, 'R', 'interface.R');
 		R(script)
-			.data('some file path')
+			.data(filePath)
 			.call((err, d) => {
 				if (err) {
+					// analysis creates regular progress messages which are registered as errors by r-script
 					const buf = err.toString('utf8');
-					console.log('error', buf);
+					console.log('message', buf);
 				}
-				console.log('data', d);
+				if (d && d.results) {
+					console.log('data', d);
+					res.status(200).json(d);
+				} else if (d) {
+					res.status(400).json({ message: 'Error processing the request' });
+				}
 			});
-		// vcf.readStream(bufferToStream(req.file.buffer), 'vcf')
-		//   .on('data', (feature) => {
-		//     requestObj.push(feature);
-		//   }).on('error', (err) => {
-		//     console.log(err);
-		//     new ErrorHandler(400, 'Error reading vcf file');
-		//   })
-		//   .once('end', () => {
-		//     // making post request to opencpu server
-		//     // uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLid/R/test/', requestObj);
-		//     uploadToOpenCPU('http://52.138.39.182/ocpu/library/CCLWebInterface/R/web_interface/json', requestObj);
-		//     res.status(200).json(requestObj);
-		//   })
-		//   .catch((err) => {
-		//     console.log(err);
-		//   });
 	} catch (err) {
 		console.log('here', err);
 	}
@@ -112,6 +101,7 @@ router.get('/upload', (req, res) => {
 	if (process.env.ENV === 'production') {
 		// calling R script to run CCLid analysis
 		R(script)
+			.data('/usr/local/lib/R/site-library/CCLWebInterface/extdata/a549.sample_id.vcf')
 			.call((err, d) => {
 				if (err) {
 					// analysis creates regular progress messages which are registered as errors by r-script

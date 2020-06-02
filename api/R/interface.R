@@ -69,8 +69,6 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
   
 }
 
+filePath <- input[[1]]
 
-# web_interface(vcfFile='/usr/local/lib/R/site-library/CCLWebInterface/extdata/a549.sample_id.vcf', outdir='/data/ccl-files/output')
-
-path <- input[[1]]
-param
+web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')
