@@ -43,14 +43,27 @@ const upload = multer({
 	},
 });
 
+// removes vcf once the analysis is done
+const deleteDataFile = (filePath) => {
+	fs.unlink(filePath, (err) => {
+		if (err) console.log(`Error deleting file ${filePath}, reason: ${err}`);
+		console.log(`File ${filePath} is sucessfully deleted`);
+	});
+};
+
 // route that handles vcf uploads and analysis 
 router.post('/upload', upload.single('file'), (req, res) => {
 	console.log('Received and saved file, running R analysis...');
 	const filePath = req.file.path;
-	// analysis timeout after 10 minutes
 	runAnalysis(filePath)
-		.then((data) => res.status(data.code).json(data.output))
-		.catch((err) => res.status(err.code).json(err.output));
+		.then((data) => {
+			res.status(data.code).json(data.output);
+			deleteDataFile(filePath);
+		})
+		.catch((err) => {
+			res.status(err.code).json(err.output);
+			deleteDataFile(filePath);
+		});
 });
 
 // // analysis with default vcf file

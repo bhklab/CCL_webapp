@@ -40,6 +40,7 @@ const promiseTimeout = function (promise, ms) {
 };
 
 const runAnalysis = function (filePath) {
+	// analysis timeout after 10 minutes
 	return promiseTimeout(callR(filePath), 600000);
 };
 
