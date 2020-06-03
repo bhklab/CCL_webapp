@@ -1,7 +1,3 @@
-# needs("CCLWebInterface")
-# needs("future")
-# attach(input[[1]])
-
 web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000, 
                           outdir=".", num.snps=500) {
     # options(warn=-1)
@@ -12,9 +8,6 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
     refdir <- '/data/ccl-files/'
     tmpdir <- '/data/ccl-files/output'
     #vcfFile=file.path(sys.data, 'a549.sample_id.vcf')
-
-    output <- 'Preemptive return'
-    
 
     ##############
     #### MAIN ####
@@ -62,6 +55,7 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
     
 
     dat <- list("results"=TRUE,
+                "error"=FALSE,
                 "pred"=pred,
                 "seg"=bdf$cna.obj[[1]]$output,
                 "fraction"=bdf$frac[[1]])
@@ -71,4 +65,12 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
 
 filePath <- input[[1]]
 
-web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')
+tryCatch({
+    web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')
+}, error = function() {
+    errorOutput <- list(
+      "error"=TRUE,
+      "message"="Error analysing vcf file"
+    )
+    return(errorOutput)
+})

@@ -16,8 +16,10 @@ const callR = (filePath) => {
 				if (d && d.results) {
 					console.log('data', d);
 					resolve({ code: 200, output: d });
+				} else if (d && d.error) {
+					reject({ code: 500, error: d.message });
 				} else if (d) {
-					reject({ code: 400, error: 'Error analysing the data' });
+					reject({ code: 500, error: 'Uknown error occurred' });
 				}
 			});
 	});
