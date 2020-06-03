@@ -33,6 +33,19 @@ const GlobalStyles = createGlobalStyle`
             text-align: left;
         }
     }
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 300px;
+        padding: 10px;
+        margin: auto;
+        width: 150px;
+        text-align: center;
+        h3 {
+            color: ${colors.darkblue_text}
+        }
+    }
     #root {
         width: 100vw;
         min-height: 100vh;

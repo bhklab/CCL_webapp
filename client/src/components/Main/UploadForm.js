@@ -1,8 +1,8 @@
 import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import colors from '../../styles/colors';
 
+import colors from '../../styles/colors';
 import AnalysisContext from '../Context/AnalysisContext';
 
 const StyledForm = styled.div`
@@ -39,7 +39,14 @@ const StyledForm = styled.div`
             cursor: pointer;
             padding: 8px 10px;
             border-radius:10px;
-            font-weight: 600;
+						font-weight: 600;
+						outline: none;
+						transition: all ease-out 0.25s;
+
+						&:hover {
+							color: ${colors.pink_main};
+							background: ${colors.darkblue_text};
+						}
         }
         .choose-file {
             background: ${colors.darkblue_bg};
@@ -58,10 +65,11 @@ const StyledForm = styled.div`
 
 
 function UploadForm() {
-	const [uploadResult, setUploadResult] = useState({ data: null, loading: false, error: null });
-	const [file, setFile] = useState(null);
+	const [ uploadResult, setUploadResult ] = useState({ data: null, loading: false, error: null });
+	const [ file, setFile ] = useState(null);
 	const fileRef = useRef(null);
-	const {analysisState, setAnalysisState} = useContext(AnalysisContext);
+	const { analysisState, setAnalysisState } = useContext(AnalysisContext);
+	const { loading } = analysisState;
 
 	const getExampleData = () => {
 		setAnalysisState({data: null, loading: true});
@@ -87,7 +95,7 @@ function UploadForm() {
 				})
 				.catch((err) => {
 					console.log(err.response);
-					if (err.response.status === 400) {
+					if (err.response.status === 400 || err.response.status === 500) {
 						const { message } = err.response.data;
 						// setUploadResult({ data: null, loading: false, error: message });
 						setAnalysisState({ data: null, loading: false, error: message });
