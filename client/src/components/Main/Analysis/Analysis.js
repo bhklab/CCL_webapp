@@ -10,21 +10,23 @@ import Segmentation from './Segmentation';
 
 const StyledAnalysis = styled.div`
   width: 100%;
-  background-color: ${colors.pink_main};
-  border-radius: 25px;
   display:flex;
   flex-direction:column;
   align-items: center;
-  padding: 20px 0px;
-  h2 {
-    color: ${colors.darkblue_text};
-    text-align: center;
+  .analysis-header {
+    color: ${colors.pink_main};
+    font-size: calc(1.5vw + 1em);
+    align-self: flex-start;
   }
   .container {
-    width: 80%;
+    width: 100%;
+    background-color: ${colors.pink_main};
+    border-radius: 25px;
     display:flex;
     flex-direction:column;
     justify-content: center;
+    padding: 40px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -36,12 +38,17 @@ function Analysis() {
   if (data && !loading) {
   return (
       <StyledAnalysis>
-        <h2>Analysis Results</h2>
+        <h2 className="analysis-header">Analysis Results</h2>
         <div className="container">
           <Fraction data={data.fraction}/>
+        </div>
+        <div className="container">
           <Prediction data={data.pred}/>
+        </div>
+        <div className="container">
           <Segmentation data={data.seg}/>
         </div>
+        
       </StyledAnalysis>
     ) 
   }
@@ -51,7 +58,7 @@ function Analysis() {
         {loading ? (
           <div className="loading-container">
             <h3>Please wait, we are processing your data...</h3>
-            <ReactLoading type="spokes" width={150} height={150} color={colors.darkblue_bg} />
+            <ReactLoading type="spokes" width={150} height={150} color="white" />
           </div>
         ) : null}
       </StyledAnalysis>

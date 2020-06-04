@@ -5,16 +5,7 @@ import ReactTable from 'react-table-6';
 
 import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
-
-
-const StyledFraction = styled.div`
-  margin: 10px;
-  h3 {
-    margin: 10px 0;
-    color: ${colors.darkblue_bg};
-    text-align: left;
-  }
-`;
+import StyledAnalysisSection from './StyledAnalysisSection';
 
 // transforms fraction result data to the format readable by react table
 const transformFractionData = (obj) => {
@@ -40,14 +31,14 @@ function Fraction(props) {
       accessor: el,
   }))
   return (
-    <StyledFraction>
+    <StyledAnalysisSection>
       <h3>Fraction</h3>
       <ReactTable
         columns={columns}
         data={standardizedData}
         defaultPageSize={5}
       />
-    </StyledFraction>
+    </StyledAnalysisSection>
   )
 }
 
