@@ -12,9 +12,19 @@ const StyledAnalysis = styled.div`
   width: 100%;
   background-color: ${colors.pink_main};
   border-radius: 25px;
+  display:flex;
+  flex-direction:column;
+  align-items: center;
+  padding: 20px 0px;
   h2 {
     color: ${colors.darkblue_text};
     text-align: center;
+  }
+  .container {
+    width: 80%;
+    display:flex;
+    flex-direction:column;
+    justify-content: center;
   }
 `;
 
@@ -27,9 +37,11 @@ function Analysis() {
   return (
       <StyledAnalysis>
         <h2>Analysis Results</h2>
-        <Fraction data={data.fraction}/>
-        <Prediction data={data.pred}/>
-        <Segmentation data={data.seg}/>
+        <div className="container">
+          <Fraction data={data.fraction}/>
+          <Prediction data={data.pred}/>
+          <Segmentation data={data.seg}/>
+        </div>
       </StyledAnalysis>
     ) 
   }

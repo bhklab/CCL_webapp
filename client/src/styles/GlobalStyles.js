@@ -16,7 +16,7 @@ const GlobalStyles = createGlobalStyle`
         font-size: calc(5vw + 8em);
     }
     main {
-        width: 80%;
+        width: 60%;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
@@ -24,6 +24,16 @@ const GlobalStyles = createGlobalStyle`
         align-items: center;
         min-height: 50%;
         // background:rgb(0,0,0,0.5);
+    }
+    .logo {
+        width: calc(5vw + 7em);
+        padding-top: 30px;
+
+    }
+    .header-container {
+        display:flex;
+        justify-content: center;
+        align-items:center;
     }
     .App {
         width: 100%;
@@ -46,6 +56,12 @@ const GlobalStyles = createGlobalStyle`
             color: ${colors.darkblue_text}
         }
     }
+
+    .ReactTable {
+        background:white;
+        color: ${colors.darkblue_text};
+    }
+
     #root {
         width: 100vw;
         min-height: 100vh;

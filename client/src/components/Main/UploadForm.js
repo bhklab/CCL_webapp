@@ -75,6 +75,7 @@ function UploadForm() {
 		setAnalysisState({data: null, loading: true});
 		axios.get('/api')
 			.then((res) => {
+				console.log(res.data);
 				// setUploadResult({ data: res.data, loading: false, error: null });
 				setAnalysisState({data: res.data, loading: false});
 			});
