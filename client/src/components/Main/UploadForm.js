@@ -8,7 +8,8 @@ import AnalysisContext from '../Context/AnalysisContext';
 const StyledForm = styled.div`
     background-color: ${colors.pink_main};
     border-radius: 25px;
-    width: 50%;
+		width: 50%;
+		min-width: 300px;
     height: 100%;
     margin: 50px 0px 80px 0px;
     padding: 20px;
@@ -42,10 +43,19 @@ const StyledForm = styled.div`
 						font-weight: 600;
 						outline: none;
 						transition: all ease-out 0.25s;
+						margin: 0 5px;
+						min-height: 40px;
 
 						&:hover {
 							color: ${colors.pink_main};
 							background: ${colors.darkblue_text};
+						};
+
+						&.disabled {
+							background: #778899;
+							&:hover {
+								color: ${colors.pink_main};
+							}
 						}
         }
         .choose-file {
@@ -54,11 +64,12 @@ const StyledForm = styled.div`
             cursor: pointer;
             padding: 8px 10px;
             border-radius:10px;
-            font-weight: 600;
+						font-weight: 600;
         }
         .file-uploaded {
             color: ${colors.darkblue_text};
-            font-size: calc(0.5vw + 0.6em);
+						font-size: calc(0.5vw + 0.6em);
+						flex-grow: 1;
         }
     }
 `;
@@ -84,19 +95,22 @@ function UploadForm() {
 	const onSubmit = (e) => {
 		e.preventDefault();
 		if (file) {
+			console.log(file);
 			setAnalysisState({ data: null, loading: true });
 			const data = new FormData();
 			data.append('file', file);
 			axios.post('/api/upload', data, {})
 			// axios.get('/api/upload')
 				.then((res) => {
+					setFile(null)
 					console.log(res);
 					setAnalysisState({ data: res.data, loading: false });
 					// setUploadResult({ data: null, loading: false, error: null });
 				})
 				.catch((err) => {
 					console.log(err.response);
-					if (err.response.status === 400 || err.response.status === 500) {
+					setFile(null)
+					if (err.response.status >= 400) {
 						const { message } = err.response.data;
 						// setUploadResult({ data: null, loading: false, error: message });
 						setAnalysisState({ data: null, loading: false, error: message });
@@ -137,8 +151,8 @@ function UploadForm() {
 				<div className="file-uploaded">
 					{file === null || file === undefined ? 'No file chosen' : file.name}
 				</div>
-				<button type="submit" onSubmit={onSubmit}>Upload</button>
-				<button type="button" onClick={getExampleData}>Test Data</button>
+				<button type="submit" onSubmit={onSubmit} disabled={!file} className={!file ?'disabled' : null}>Analyze</button>
+				<button type="button" onClick={getExampleData}>Test</button>
 			</form>
 			{uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
 		</StyledForm>

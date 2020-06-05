@@ -13,57 +13,58 @@ const router = express.Router();
 
 // sends example response data
 router.get('/', (req, res) => {
-	res.status(200).json(responseData);
+  res.status(200).json(responseData);
 });
 
 // assigns directory and creates it in the file system if it doesn't exist
 const saveDirectory = '/tmp/cclid-uploads';
 if (!fs.existsSync(saveDirectory)) {
-	fs.mkdirSync(saveDirectory);
+  fs.mkdirSync(saveDirectory);
 }
 
 // mutler disc storage config
 const storage = multer.diskStorage({
-	destination(req, file, cb) {
-		cb(null, saveDirectory);
-	},
-	filename(req, file, cb) {
-		cb(null, `${file.fieldname}-${Date.now()}.vcf`);
-	},
+  destination(req, file, cb) {
+    cb(null, saveDirectory);
+  },
+  filename(req, file, cb) {
+    cb(null, `${file.fieldname}-${Date.now()}.vcf`);
+  },
 });
 
 // multer filters non vcf files out
 const upload = multer({
-	storage,
-	fileFilter(req, file, cb) {
-		if (!file.originalname.match(/\.vcf$/)) {
-			return cb(new ErrorHandler(400, 'Only vcf files are allowed!'));
-		}
-		cb(null, true);
-	},
+  storage,
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.vcf$/)) {
+      return cb(new ErrorHandler(400, 'Only vcf files are allowed!'));
+    }
+    cb(null, true);
+  },
 });
 
 // removes vcf once the analysis is done
 const deleteDataFile = (filePath) => {
-	fs.unlink(filePath, (err) => {
-		if (err) console.log(`Error deleting file ${filePath}, reason: ${err}`);
-		console.log(`File ${filePath} is sucessfully deleted`);
-	});
+  fs.unlink(filePath, (err) => {
+    if (err) console.log(`Error deleting file ${filePath}, reason: ${err}`);
+    console.log(`File ${filePath} is sucessfully deleted`);
+  });
 };
 
-// route that handles vcf uploads and analysis 
+// route that handles vcf uploads and analysis
 router.post('/upload', upload.single('file'), (req, res) => {
-	console.log('Received and saved file, running R analysis...');
-	const filePath = req.file.path;
-	runAnalysis(filePath)
-		.then((data) => {
-			res.status(data.code).json(data.output);
-			deleteDataFile(filePath);
-		})
-		.catch((err) => {
-			res.status(err.code).json(err.output);
-			deleteDataFile(filePath);
-		});
+  console.log('Received and saved file, running R analysis...');
+  const filePath = req.file.path;
+  res.status(400).json({ message: 'Success' });
+  // runAnalysis(filePath)
+  //   .then((data) => {
+  //     res.status(data.code).json(data.output);
+  //     deleteDataFile(filePath);
+  //   })
+  //   .catch((err) => {
+  //     res.status(err.code).json(err.output);
+  //     deleteDataFile(filePath);
+  //   });
 });
 
 // // analysis with default vcf file
