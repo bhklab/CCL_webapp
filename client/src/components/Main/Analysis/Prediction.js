@@ -51,7 +51,7 @@ function Prediction(props) {
   const standardizedData = standardizeROutput(data);
   return (
     <StyledAnalysisSection>
-      <h3>Segmentation</h3>
+      <h3>Prediction</h3>
       <ReactTable
         columns={columns}
         data={standardizedData}

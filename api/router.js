@@ -13,6 +13,8 @@ const router = express.Router();
 
 // sends example response data
 router.get('/', (req, res) => {
+  const output = responseData;
+  output.fileName = 'test';
   res.status(200).json(responseData);
 });
 
@@ -54,17 +56,27 @@ const deleteDataFile = (filePath) => {
 // route that handles vcf uploads and analysis
 router.post('/upload', upload.single('file'), (req, res) => {
   console.log('Received and saved file, running R analysis...');
+  // gets uploaded file location
   const filePath = req.file.path;
-  res.status(400).json({ message: 'Success' });
-  // runAnalysis(filePath)
-  //   .then((data) => {
-  //     res.status(data.code).json(data.output);
-  //     deleteDataFile(filePath);
-  //   })
-  //   .catch((err) => {
-  //     res.status(err.code).json(err.output);
-  //     deleteDataFile(filePath);
-  //   });
+  // gets original file name
+  const { originalname } = req.file;
+  if (process.env.ENV === 'production') {
+    runAnalysis(filePath)
+      .then((data) => {
+        const { output } = data;
+        output.fileName = originalname;
+        res.status(data.code).json(output);
+        deleteDataFile(filePath);
+      })
+      .catch((err) => {
+        const { output } = err;
+        output.fileName = originalname;
+        res.status(err.code).json(output);
+        deleteDataFile(filePath);
+      });
+  } else {
+    res.status(400).json({ message: 'R package is not supposed to work in "development"' });
+  }
 });
 
 // // analysis with default vcf file

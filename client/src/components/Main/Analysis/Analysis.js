@@ -17,6 +17,7 @@ const StyledAnalysis = styled.div`
     color: ${colors.pink_main};
     font-size: calc(1.5vw + 1em);
     align-self: flex-start;
+    margin: 0;
   }
   .container {
     width: 100%;
@@ -27,6 +28,15 @@ const StyledAnalysis = styled.div`
     justify-content: center;
     padding: 40px;
     margin-bottom: 30px;
+  }
+  .fileName {
+    color: ${colors.pink_main};
+    font-weight: bold;
+    margin: 0 0 10px;
+    margin-right: auto;
+  }
+  .rt-th {
+    text-align: left;
   }
 `;
 
@@ -39,6 +49,7 @@ function Analysis() {
   return (
       <StyledAnalysis>
         <h2 className="analysis-header">Analysis Results</h2>
+        <h3 className="fileName">{data.fileName}</h3>
         <div className="container">
           <Fraction data={data.fraction}/>
         </div>
