@@ -53,7 +53,7 @@ const GlobalStyles = createGlobalStyle`
         width: 150px;
         text-align: center;
         h3 {
-            color: ${colors.darkblue_text}
+            color: white;
         }
     }
 
