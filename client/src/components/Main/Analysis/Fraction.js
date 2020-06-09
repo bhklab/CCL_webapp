@@ -8,17 +8,6 @@ import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
 
-const StyledWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-  
-  h3 {
-    margin: 0;
-  }
-`;
-
 // transforms fraction result data to the format readable by react table
 const transformFractionData = (obj) => {
   const output = [];
@@ -52,14 +41,14 @@ function Fraction(props) {
   })
   return (
     <StyledAnalysisSection>
-      <StyledWrapper>
+      <div className="analysis-wrapper">
         <h3>Fraction</h3>
         <DownloadButton
           data={standardizedData}
           headers={headers}
           filename={`fraction(${fileName})`}
         />
-      </StyledWrapper>
+      </div>
       <ReactTable
         columns={columns}
         data={standardizedData}
