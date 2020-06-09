@@ -13,12 +13,13 @@ const StyledAnalysis = styled.div`
   display:flex;
   flex-direction:column;
   align-items: center;
+
   .analysis-header {
     color: ${colors.pink_main};
-    font-size: calc(1.5vw + 1em);
     align-self: flex-start;
-    margin: 0;
+    margin: 0 0 10px;
   }
+
   .container {
     width: 100%;
     background-color: ${colors.pink_main};
@@ -29,35 +30,37 @@ const StyledAnalysis = styled.div`
     padding: 40px;
     margin-bottom: 30px;
   }
+
   .fileName {
+    font-size: calc(1.5vw + 1em);
     color: ${colors.pink_main};
     font-weight: bold;
-    margin: 0 0 10px;
+    margin: 0;
     margin-right: auto;
   }
+
   .rt-th {
     text-align: left;
   }
 `;
 
-
 function Analysis() {
   const { analysisState } = useContext(AnalysisContext);
   const { data, loading } = analysisState
-  console.log(analysisState);
   if (data && !loading) {
+  const { fileName, fraction, pred, seg } = data;
   return (
       <StyledAnalysis>
-        <h2 className="analysis-header">Analysis Results</h2>
-        <h3 className="fileName">{data.fileName}</h3>
+        <h2 className="fileName">{fileName}</h2>
+        <h3 className="analysis-header">Analysis Results</h3>
         <div className="container">
-          <Fraction data={data.fraction}/>
+          <Fraction data={fraction} fileName={fileName}/>
         </div>
         <div className="container">
-          <Prediction data={data.pred}/>
+          <Prediction data={pred} fileName={fileName}/>
         </div>
         <div className="container">
-          <Segmentation data={data.seg}/>
+          <Segmentation data={seg} fileName={fileName}/>
         </div>
         
       </StyledAnalysis>

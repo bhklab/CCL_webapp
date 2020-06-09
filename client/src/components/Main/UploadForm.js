@@ -86,7 +86,6 @@ function UploadForm() {
 		setAnalysisState({data: null, loading: true});
 		axios.get('/api')
 			.then((res) => {
-				console.log(res.data);
 				// setUploadResult({ data: res.data, loading: false, error: null });
 				setAnalysisState({data: res.data, loading: false});
 			});
@@ -95,7 +94,6 @@ function UploadForm() {
 	const onSubmit = (e) => {
 		e.preventDefault();
 		if (file) {
-			console.log(file);
 			setAnalysisState({ data: null, loading: true });
 			const data = new FormData();
 			data.append('file', file);
@@ -103,7 +101,6 @@ function UploadForm() {
 			// axios.get('/api/upload')
 				.then((res) => {
 					setFile(null)
-					console.log(res);
 					setAnalysisState({ data: res.data, loading: false });
 					// setUploadResult({ data: null, loading: false, error: null });
 				})

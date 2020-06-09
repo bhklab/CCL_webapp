@@ -6,6 +6,18 @@ import ReactTable from 'react-table-6';
 import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
+import DownloadButton from '../../utils/DownloadButton';
+
+const StyledWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  
+  h3 {
+    margin: 0;
+  }
+`;
 
 // transforms fraction result data to the format readable by react table
 const transformFractionData = (obj) => {
@@ -23,16 +35,31 @@ const transformFractionData = (obj) => {
 }
 
 function Fraction(props) {
-  const { data } = props;
+  const { data, fileName } = props;
   // removes '.' from R generated object
   const standardizedData = transformFractionData(data);
-  const columns = Object.keys(data).map(el => ({
+  const columns = [];
+  const headers = [];
+  Object.keys(data).forEach(el => {
+    columns.push({
       Header: el,
       accessor: el,
-  }))
+    })
+    headers.push({
+      displayName: el,
+      id: el,
+    })
+  })
   return (
     <StyledAnalysisSection>
-      <h3>Fraction</h3>
+      <StyledWrapper>
+        <h3>Fraction</h3>
+        <DownloadButton
+          data={standardizedData}
+          headers={headers}
+          filename={`fraction(${fileName})`}
+        />
+      </StyledWrapper>
       <ReactTable
         columns={columns}
         data={standardizedData}
