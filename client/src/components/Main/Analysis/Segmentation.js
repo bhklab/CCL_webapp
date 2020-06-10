@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
 
-import colors from '../../../styles/colors';
+// import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
+import SegmentationPlot from './Plots/SegmentationPlot';
 
 const columns = [
   {
@@ -120,6 +121,7 @@ function Segmentation(props) {
         data={standardizedData}
         defaultPageSize={10}
       />
+      <SegmentationPlot/>
     </StyledAnalysisSection>
   )
 }

@@ -65,6 +65,12 @@ const GlobalStyles = createGlobalStyle`
         }
     }
 
+    // plotly styling
+    .js-plotly-plot {
+        width: 100%;
+    }
+
+    // react-table class styling
     .ReactTable {
         background:white;
         color: ${colors.darkblue_text};
