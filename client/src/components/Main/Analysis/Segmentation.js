@@ -121,7 +121,9 @@ function Segmentation(props) {
         data={standardizedData}
         defaultPageSize={10}
       />
-      <SegmentationPlot/>
+      <SegmentationPlot
+        data={standardizedData}
+      />
     </StyledAnalysisSection>
   )
 }
