@@ -104,8 +104,21 @@ const headers = [
 
 function Segmentation(props) {
   const { data, fileName } = props;
+  console.log(data);
   // removes '.' from R generated object
   const standardizedData = standardizeROutput(data);
+
+  const dataByDataset = {}
+  standardizedData.forEach(el => {
+    // reverse spread operator, 'data' object is 'el' but without ID
+    const { ID, ...data } = el
+    if (!dataByDataset[ID]) {
+      dataByDataset[ID] = [data]
+    } else {
+      dataByDataset[ID].push(data)
+    }
+  })
+  console.log(dataByDataset);
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">
@@ -121,9 +134,13 @@ function Segmentation(props) {
         data={standardizedData}
         defaultPageSize={10}
       />
-      <SegmentationPlot
-        data={standardizedData}
-      />
+      {Object.entries(dataByDataset).map(el => (
+        <SegmentationPlot
+          name={el[0]}
+          key={el[0]}
+          data={el[1]}
+        />
+      ))}
     </StyledAnalysisSection>
   )
 }

@@ -7,6 +7,13 @@ import colors from '../../../../styles/colors';
 const StyledDiv = styled.div`
     width: 100%;
     padding: 20px 0;
+
+    h3 {
+      color: ${colors.darkblue_text};
+      font-size: 18px;
+      text-align: center;
+      padding: 10px 0;
+    }
 `;
 
 // barWidth is set to 0.5 becasuse 1 chromosome has 2 arms 
@@ -32,20 +39,42 @@ const populateBars = data => {
 // const generate
 
 function SegmentationPlot(props) {
-  const { data } = props;
+  const { data, name } = props;
   const plotData = generatePlotData(data)
   console.log(plotData);
 
   const sdData = populateBars(data)
 
-  const standardDeviationLayer = { type: 'bar', x: sdData.map(el => el.xPos), y: sdData.map(el => el.yPos), width: barWidth }
-  const allLayers = [standardDeviationLayer]
+  // mirrors data at the bottom
+  const standardDeviationLayer = [{
+    type: 'bar',
+    x: sdData.map(el => el.xPos),
+    y: sdData.map(el => el.yPos),
+    width: barWidth,
+    opacity: 0.5,
+    marker: {
+      color: colors.darkblue_bg
+    }
+  }, {
+      type: 'bar',
+      x: sdData.map(el => el.xPos),
+      y: sdData.map(el => -el.yPos),
+      width: barWidth,
+      opacity: 0.5,
+      marker: {
+        color: colors.darkblue_bg
+      }
+  }]
+
+  const allLayers = [...standardDeviationLayer]
 
   const layout = {
     autosize: true,
-    height: 350,
+    height: 450,
     hovermode: 'closest',
     bargap: 0,
+    barmode: 'overlay',
+    showlegend: false,
     margin: {
       l: 50,
       r: 0,
@@ -68,6 +97,7 @@ function SegmentationPlot(props) {
   
   return (
     <StyledDiv>
+      <h3>{name}</h3>
       <Plot
         graphDiv="graph"
         config={{
