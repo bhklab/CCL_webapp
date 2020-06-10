@@ -19,10 +19,12 @@ const StyledDiv = styled.div`
 // barWidth is set to 0.5 becasuse 1 chromosome has 2 arms 
 const barWidth = 0.5
 
+// modifies the data for further rendering
 const generatePlotData = (data) => {
   return data.map(el => ({chrom: el.chrom, width: el.locend - el.locstart, segmean: el.segmean, segsd: el.segsd, segz: el.segz, t: el.t}))
 }
 
+// creates bar structure for plotly to work with
 const populateBars = data => {
   const output = []
 
@@ -36,7 +38,23 @@ const populateBars = data => {
   return output
 }
 
-// const generate
+// creates bin structure for chromosomes, uses plotly shapes
+const generateGrid = chromosomeNum => {
+  const shapes = []
+  let xPos = 0.5
+  for (let i = 0; i < chromosomeNum; i++) {
+    const line = {
+      x0: xPos,
+      x1: xPos,
+      y0: -1,
+      y1: 1,
+      type: 'line'
+    }
+    shapes.push(line)
+    xPos += barWidth * 2
+  }
+  return shapes
+}
 
 function SegmentationPlot(props) {
   const { data, name } = props;
@@ -50,6 +68,9 @@ function SegmentationPlot(props) {
     type: 'bar',
     x: sdData.map(el => el.xPos),
     y: sdData.map(el => el.yPos),
+    // x: [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
+    // x: [0.75, 1.75, 2.75, 3.75, 4.75],
+    // y: [0.3, 0.7, 0.24, 0.12, 0.08],
     width: barWidth,
     opacity: 0.5,
     marker: {
@@ -59,6 +80,9 @@ function SegmentationPlot(props) {
       type: 'bar',
       x: sdData.map(el => el.xPos),
       y: sdData.map(el => -el.yPos),
+      // x: [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
+      // x: [0.25, 1.25, 2.25, 3.25, 4.25],
+      // y: [0.1, 0.2, 0.14, 0.21, 0.13],
       width: barWidth,
       opacity: 0.5,
       marker: {
@@ -66,6 +90,7 @@ function SegmentationPlot(props) {
       }
   }]
 
+  // combines all layers together to be sent to plotly
   const allLayers = [...standardDeviationLayer]
 
   const layout = {
@@ -77,22 +102,34 @@ function SegmentationPlot(props) {
     showlegend: false,
     margin: {
       l: 50,
-      r: 0,
+      r: 30,
       t: 30,
-      b: 55,
+      b: 75,
     },
     xaxis: {
       title: {
         text: 'Chromosome',
       },
+      // type: 'category',
+      // range: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5],
+      // categoryorder: "array",
+      // categoryarray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+      // categoryarray: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5],
       color: colors.darkblue_text,
       tickcolor: colors.darkblue_text,
       linecolor: colors.darkblue_text,
+      tickmode: 'array',
+      tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+      ticktext: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 'X'],
+      // tickson: 'boundaries',
+      // showgrid: true,
+      // showdividers: true
     },
     yaxis : {
       fixedrange: true,
       mirror: true,
-    }
+    },
+    shapes: generateGrid(23)
   }
   
   return (
