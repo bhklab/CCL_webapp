@@ -14,6 +14,7 @@ function Home() {
                     <img className="logo" src={logo}/>
                     <h1>CCLid</h1>
                 </div>
+                <h2>A toolkit to authenticate the genotype and stability of cancer cell lines</h2>
                 <UploadForm />
                 <Analysis></Analysis>
             </main>

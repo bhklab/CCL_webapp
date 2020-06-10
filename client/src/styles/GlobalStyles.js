@@ -15,6 +15,14 @@ const GlobalStyles = createGlobalStyle`
         font-weight: 400;
         font-size: calc(5vw + 8em);
     }
+    h2 {
+        color: ${colors.pink_main};
+        font-family: 'Sen', sans-serif;
+        font-weight: 400;
+        font-size: calc(1vw + 1.5em);
+        text-align: center;
+        margin: 0;
+    }
     main {
         width: 60%;
         margin: 0 auto;
