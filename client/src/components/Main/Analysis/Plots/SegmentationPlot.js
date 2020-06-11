@@ -36,8 +36,9 @@ const generateHighlightedBars = (data) => {
       // bars are only being highlighted if t is 3 or above
       if (chrom[1].t >= 3) {
         if (!Number.isNaN(parseInt(chrom[0]))) xArray.push(parseInt(chrom[0]) + positionCorrection)
-        if (chrom[0].toUpperCase() === 'X') xArray.push(22 + positionCorrection)
-        if (chrom[0].toUpperCase() === 'Y') xArray.push(23 + positionCorrection)
+        // 22 pairs of autosomes and 2 different sex chromosomes
+        if (chrom[0].toUpperCase() === 'X') xArray.push(23 + positionCorrection)
+        if (chrom[0].toUpperCase() === 'Y') xArray.push(24 + positionCorrection)
       }
     })
   })
@@ -71,11 +72,11 @@ const generateSDBars = data => {
     }
 
     Object.entries(el[1]).forEach(chrom => {
-      const row = { yPos: chrom[1].segsd, hoverText: `${chrom[1].segsd} (chromosome ${chrom[0]}, ${el[0]} arm)`}
+      const row = { yPos: chrom[1].segsd, base: chrom[1].segmean, hoverText: `${chrom[1].segsd} (chromosome ${chrom[0]}, ${el[0]} arm)`}
       // uses chromosome # to determine its relative position on the plot
       if (!Number.isNaN(parseInt(chrom[0]))) row.xPos = parseInt(chrom[0]) + positionCorrection
-      if (chrom[0].toUpperCase() === 'X') row.xPos = 22 + positionCorrection
-      if (chrom[0].toUpperCase() === 'Y') row.xPos = 23 + positionCorrection
+      if (chrom[0].toUpperCase() === 'X') row.xPos = 23 + positionCorrection
+      if (chrom[0].toUpperCase() === 'Y') row.xPos = 24 + positionCorrection
       output.push(row)
     })
   })
@@ -87,6 +88,7 @@ const generateSDBars = data => {
     hoverinfo: 'text',
     hovertext: output.map(el => el.hoverText),
     width: barWidth,
+    base: output.map(el => el.base),
     opacity: 0.5,
     marker: {
       color: colors.darkblue_bg
@@ -96,15 +98,31 @@ const generateSDBars = data => {
 }
 
 // creates bin structure for chromosomes, uses plotly shapes
-const generateGrid = chromosomeNum => {
+const generateGrid = data => {
+  console.log(data);
   const shapes = []
   let xPos = 0.5
-  for (let i = 0; i < chromosomeNum; i++) {
+
+  // checks for shape drawing boundaries 
+  // let minY = 0
+  // let maxY = 0
+  // Object.values(data).forEach(arm => {
+  //   Object.values(arm).forEach(chromosome => {
+  //     const { segmean, segsd } = chromosome
+  //     if (maxY < segmean + segsd) maxY = segmean + segsd
+  //     if (minY < segmean - segsd) minY = segmean - segsd
+  //   })
+  // })
+
+  // checks how many chromosome bins are there (depends on presence or absence of Y chromosomes)
+  // the check is done on q arm because it's always present, compared to p arm
+  console.log(data.q.Y);
+  for (let i = 0; i < 23; i++) {
     const line = {
       x0: xPos,
       x1: xPos,
-      y0: -1,
-      y1: 1,
+      y0: -1.1,
+      y1: 1.1,
       type: 'line',
       line: {
         color: colors.darkblue_text,
@@ -123,7 +141,7 @@ function SegmentationPlot(props) {
   const highlightedLayer = generateHighlightedBars(data)
   const standardDeviationLayer = generateSDBars(data)
   // combines all layers together to be sent to plotly
-  const allLayers = [...standardDeviationLayer, ...highlightedLayer ]
+  const allLayers = [...standardDeviationLayer, ...highlightedLayer]
 
   // layout structure of the plot
   const layout = {
@@ -161,14 +179,14 @@ function SegmentationPlot(props) {
       tickcolor: colors.darkblue_text,
       linecolor: colors.darkblue_text,
       tickmode: 'array',
-      tickvals: Array.from({ length: 23 }, (v, k) => k + 1),
+      tickvals: Array.from({ length: 24 }, (v, k) => k + 1),
       // adds X and Y chromosomes as labels at the end
-      ticktext: Array.from({ length: 21 }, (v, k) => k + 1).concat(['X', 'Y']),
+      ticktext: Array.from({ length: 22 }, (v, k) => k + 1).concat(['X', 'Y']),
       fixedrange: true,
     },
     yaxis : {
       title: {
-        text: 'SD',
+        text: 'Segmentation Mean',
         font: {
           family: '"Sen", sans-serif',
           size: 18,
@@ -183,7 +201,7 @@ function SegmentationPlot(props) {
       tickmode: 'array',
       tickvals: [-0.5, 0, 0.5],
     },
-    shapes: generateGrid(23)
+    shapes: generateGrid(data)
   }
   
   return (
