@@ -108,17 +108,30 @@ function Segmentation(props) {
   // removes '.' from R generated object
   const standardizedData = standardizeROutput(data);
 
-  const dataByDataset = {}
+  const plotData = {}
+  console.log(standardizedData);
   standardizedData.forEach(el => {
     // reverse spread operator, 'data' object is 'el' but without ID
-    const { ID, ...data } = el
-    if (!dataByDataset[ID]) {
-      dataByDataset[ID] = [data]
-    } else {
-      dataByDataset[ID].push(data)
-    }
+    const { ID, chrom, arm, ...data } = el
+    // changes chromosome to number or X or Y value 
+    const chromosome = Number.isNaN(parseInt(chrom.replace('chr', ''))) ? chrom.replace('chr', '') : parseInt(chrom.replace('chr', ''))
+
+    // creates new data structure suitable for the plotly plot
+    if (!plotData[ID]) plotData[ID] = {}
+    if (!plotData[ID][arm]) plotData[ID][arm] = {}
+    plotData[ID][arm][chromosome] = data
+    // if (!plotData[ID]) {
+    //   if (arm === 'p') {
+
+    //   } else {
+
+    //   }
+    //   plotData[ID] = [data]
+    // } else {
+    //   plotData[ID].push(data)
+    // }
   })
-  console.log(dataByDataset);
+  console.log(plotData);
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">
@@ -134,7 +147,7 @@ function Segmentation(props) {
         data={standardizedData}
         defaultPageSize={10}
       />
-      {Object.entries(dataByDataset).map(el => (
+      {Object.entries(plotData).map(el => (
         <SegmentationPlot
           name={el[0]}
           key={el[0]}

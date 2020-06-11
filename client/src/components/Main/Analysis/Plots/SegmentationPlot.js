@@ -28,11 +28,23 @@ const generatePlotData = (data) => {
 const populateBars = data => {
   const output = []
 
-  let xPosition = 1 - barWidth / 2
+  Object.entries(data).forEach(el => {
+    // checks chromosome arm to know what side of the bin the data should be visualized on
+    let positionCorrection
+    if (el[0] === 'p') {
+      positionCorrection = -barWidth / 2
+    } else {
+      positionCorrection = barWidth / 2
+    }
 
-  data.forEach(el => {
-    output.push({xPos: xPosition, yPos: el.segsd})
-    xPosition += barWidth
+    Object.entries(el[1]).forEach(chrom => {
+      const row = { yPos: chrom[1].segsd}
+      // uses chromosome # to determine its relative vposition on the plot
+      if (!Number.isNaN(parseInt(chrom[0]))) row.xPos = parseInt(chrom[0]) + positionCorrection
+      if (chrom[0].toUpperCase() === 'X') row.xPos = 22 + positionCorrection
+      if (chrom[0].toUpperCase() === 'Y') row.xPos = 23 + positionCorrection
+      output.push(row)
+    })
   })
 
   return output
@@ -48,7 +60,11 @@ const generateGrid = chromosomeNum => {
       x1: xPos,
       y0: -1,
       y1: 1,
-      type: 'line'
+      type: 'line',
+      line: {
+        color: colors.darkblue_text,
+        opacity: 0.75
+      }
     }
     shapes.push(line)
     xPos += barWidth * 2
@@ -58,10 +74,13 @@ const generateGrid = chromosomeNum => {
 
 function SegmentationPlot(props) {
   const { data, name } = props;
-  const plotData = generatePlotData(data)
-  console.log(plotData);
+  // const plotData = generatePlotData(data)
+  // console.log(plotData);
+
+  console.log(data);
 
   const sdData = populateBars(data)
+  console.log(sdData);
 
   // mirrors data at the bottom
   const standardDeviationLayer = [{
