@@ -47,7 +47,9 @@ const generateHighlightedBars = (data) => {
   const trace = {
     type: 'bar',
     x: xArray,
-    y: Array(xArray.length).fill(1),
+    // the bar runs from -1 to 1 on y axis
+    y: Array(xArray.length).fill(2),
+    base: -1,
     width: barWidth,
     opacity: 0.5,
     marker: {
@@ -55,8 +57,7 @@ const generateHighlightedBars = (data) => {
     },
     hoverinfo: 'skip'
   }
-  //return two mirrored traces
-  return [{ ...trace, y: Array(xArray.length).fill(1) }, { ...trace, y: Array(xArray.length).fill(-1)}]
+  return trace
 }
 
 // creates bar structure for plotly to work with
@@ -72,7 +73,7 @@ const generateSDBars = data => {
     }
 
     Object.entries(el[1]).forEach(chrom => {
-      const row = { yPos: chrom[1].segsd, base: chrom[1].segmean, hoverText: `${chrom[1].segsd} (chromosome ${chrom[0]}, ${el[0]} arm)`}
+      const row = { yPos: 2 * chrom[1].segsd, base: chrom[1].segmean - chrom[1].segsd, hoverText: `${chrom[1].segmean} (chromosome ${chrom[0]}, ${el[0]} arm)`}
       // uses chromosome # to determine its relative position on the plot
       if (!Number.isNaN(parseInt(chrom[0]))) row.xPos = parseInt(chrom[0]) + positionCorrection
       if (chrom[0].toUpperCase() === 'X') row.xPos = 23 + positionCorrection
@@ -85,6 +86,7 @@ const generateSDBars = data => {
   const trace = {
     type: 'bar',
     x: output.map(el => el.xPos),
+    y: output.map(el => el.yPos),
     hoverinfo: 'text',
     hovertext: output.map(el => el.hoverText),
     width: barWidth,
@@ -94,7 +96,7 @@ const generateSDBars = data => {
       color: colors.darkblue_bg
     }
   }
-  return [{ ...trace, y: output.map(el => el.yPos) }, { ...trace, y: output.map(el => -el.yPos) }]
+  return trace
 }
 
 // creates bin structure for chromosomes, uses plotly shapes
@@ -116,8 +118,8 @@ const generateGrid = data => {
 
   // checks how many chromosome bins are there (depends on presence or absence of Y chromosomes)
   // the check is done on q arm because it's always present, compared to p arm
-  console.log(data.q.Y);
-  for (let i = 0; i < 23; i++) {
+  const numberOfBins = data.q.Y ? 24 : 23
+  for (let i = 0; i < numberOfBins; i++) {
     const line = {
       x0: xPos,
       x1: xPos,
@@ -141,7 +143,7 @@ function SegmentationPlot(props) {
   const highlightedLayer = generateHighlightedBars(data)
   const standardDeviationLayer = generateSDBars(data)
   // combines all layers together to be sent to plotly
-  const allLayers = [...standardDeviationLayer, ...highlightedLayer]
+  const allLayers = [standardDeviationLayer, highlightedLayer]
 
   // layout structure of the plot
   const layout = {
