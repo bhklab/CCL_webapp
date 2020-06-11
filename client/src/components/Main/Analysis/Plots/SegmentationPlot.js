@@ -20,14 +20,47 @@ const StyledDiv = styled.div`
 const barWidth = 0.5
 
 // modifies the data for further rendering
-const generatePlotData = (data) => {
-  return data.map(el => ({chrom: el.chrom, width: el.locend - el.locstart, segmean: el.segmean, segsd: el.segsd, segz: el.segz, t: el.t}))
+const generateHighlightedBars = (data) => {
+  // generates xArray positions
+  const xArray = []
+  Object.entries(data).forEach(el => {
+    // checks chromosome arm to know what side of the bin the data should be visualized on
+    let positionCorrection
+    if (el[0] === 'p') {
+      positionCorrection = -barWidth / 2
+    } else {
+      positionCorrection = barWidth / 2
+    }
+
+    Object.entries(el[1]).forEach(chrom => {
+      // bars are only being highlighted if t is 3 or above
+      if (chrom[1].t >= 3) {
+        if (!Number.isNaN(parseInt(chrom[0]))) xArray.push(parseInt(chrom[0]) + positionCorrection)
+        if (chrom[0].toUpperCase() === 'X') xArray.push(22 + positionCorrection)
+        if (chrom[0].toUpperCase() === 'Y') xArray.push(23 + positionCorrection)
+      }
+    })
+  })
+
+  // trace object for the highlighted bar
+  const trace = {
+    type: 'bar',
+    x: xArray,
+    y: Array(xArray.length).fill(1),
+    width: barWidth,
+    opacity: 0.5,
+    marker: {
+      color: colors.red_main
+    },
+    hoverinfo: 'skip'
+  }
+  //return two mirrored traces
+  return [{ ...trace, y: Array(xArray.length).fill(1) }, { ...trace, y: Array(xArray.length).fill(-1)}]
 }
 
 // creates bar structure for plotly to work with
-const populateBars = data => {
+const generateSDBars = data => {
   const output = []
-
   Object.entries(data).forEach(el => {
     // checks chromosome arm to know what side of the bin the data should be visualized on
     let positionCorrection
@@ -47,7 +80,19 @@ const populateBars = data => {
     })
   })
 
-  return output
+  // trace object for the SD bar
+  const trace = {
+    type: 'bar',
+    x: output.map(el => el.xPos),
+    hoverinfo: 'text',
+    hovertext: output.map(el => el.hoverText),
+    width: barWidth,
+    opacity: 0.5,
+    marker: {
+      color: colors.darkblue_bg
+    }
+  }
+  return [{ ...trace, y: output.map(el => el.yPos) }, { ...trace, y: output.map(el => -el.yPos) }]
 }
 
 // creates bin structure for chromosomes, uses plotly shapes
@@ -75,41 +120,12 @@ const generateGrid = chromosomeNum => {
 
 function SegmentationPlot(props) {
   const { data, name } = props;
-  // const plotData = generatePlotData(data)
-  // console.log(plotData);
-
-  console.log(data);
-
-  const sdData = populateBars(data)
-
-  // mirrors data at the bottom
-  const standardDeviationLayer = [{
-    type: 'bar',
-    x: sdData.map(el => el.xPos),
-    y: sdData.map(el => el.yPos),
-    hoverinfo: 'text',
-    hovertext: sdData.map(el => el.hoverText),
-    width: barWidth,
-    opacity: 0.5,
-    marker: {
-      color: colors.darkblue_bg
-    }
-  }, {
-      type: 'bar',
-      x: sdData.map(el => el.xPos),
-      y: sdData.map(el => -el.yPos),
-      hoverinfo: 'text',
-      hovertext: sdData.map(el => el.hoverText),
-      width: barWidth,
-      opacity: 0.5,
-      marker: {
-        color: colors.darkblue_bg
-      }
-  }]
-
+  const highlightedLayer = generateHighlightedBars(data)
+  const standardDeviationLayer = generateSDBars(data)
   // combines all layers together to be sent to plotly
-  const allLayers = [...standardDeviationLayer]
+  const allLayers = [...standardDeviationLayer, ...highlightedLayer ]
 
+  // layout structure of the plot
   const layout = {
     autosize: true,
     height: 500,
@@ -146,6 +162,7 @@ function SegmentationPlot(props) {
       linecolor: colors.darkblue_text,
       tickmode: 'array',
       tickvals: Array.from({ length: 23 }, (v, k) => k + 1),
+      // adds X and Y chromosomes as labels at the end
       ticktext: Array.from({ length: 21 }, (v, k) => k + 1).concat(['X', 'Y']),
       fixedrange: true,
     },
