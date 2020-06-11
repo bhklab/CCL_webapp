@@ -38,8 +38,8 @@ const populateBars = data => {
     }
 
     Object.entries(el[1]).forEach(chrom => {
-      const row = { yPos: chrom[1].segsd}
-      // uses chromosome # to determine its relative vposition on the plot
+      const row = { yPos: chrom[1].segsd, hoverText: `${chrom[1].segsd} (chromosome ${chrom[0]}, ${el[0]} arm)`}
+      // uses chromosome # to determine its relative position on the plot
       if (!Number.isNaN(parseInt(chrom[0]))) row.xPos = parseInt(chrom[0]) + positionCorrection
       if (chrom[0].toUpperCase() === 'X') row.xPos = 22 + positionCorrection
       if (chrom[0].toUpperCase() === 'Y') row.xPos = 23 + positionCorrection
@@ -80,16 +80,14 @@ function SegmentationPlot(props) {
   console.log(data);
 
   const sdData = populateBars(data)
-  console.log(sdData);
 
   // mirrors data at the bottom
   const standardDeviationLayer = [{
     type: 'bar',
     x: sdData.map(el => el.xPos),
     y: sdData.map(el => el.yPos),
-    // x: [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
-    // x: [0.75, 1.75, 2.75, 3.75, 4.75],
-    // y: [0.3, 0.7, 0.24, 0.12, 0.08],
+    hoverinfo: 'text',
+    hovertext: sdData.map(el => el.hoverText),
     width: barWidth,
     opacity: 0.5,
     marker: {
@@ -99,9 +97,8 @@ function SegmentationPlot(props) {
       type: 'bar',
       x: sdData.map(el => el.xPos),
       y: sdData.map(el => -el.yPos),
-      // x: [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8],
-      // x: [0.25, 1.25, 2.25, 3.25, 4.25],
-      // y: [0.1, 0.2, 0.14, 0.21, 0.13],
+      hoverinfo: 'text',
+      hovertext: sdData.map(el => el.hoverText),
       width: barWidth,
       opacity: 0.5,
       marker: {
@@ -129,20 +126,12 @@ function SegmentationPlot(props) {
       title: {
         text: 'Chromosome',
       },
-      // type: 'category',
-      // range: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5],
-      // categoryorder: "array",
-      // categoryarray: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-      // categoryarray: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5],
       color: colors.darkblue_text,
       tickcolor: colors.darkblue_text,
       linecolor: colors.darkblue_text,
       tickmode: 'array',
-      tickvals: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-      ticktext: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 'X'],
-      // tickson: 'boundaries',
-      // showgrid: true,
-      // showdividers: true
+      tickvals: Array.from({ length: 23 }, (v, k) => k + 1),
+      ticktext: Array.from({ length: 21 }, (v, k) => k + 1).concat(['X', 'Y']),
     },
     yaxis : {
       fixedrange: true,
