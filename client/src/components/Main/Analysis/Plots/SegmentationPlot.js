@@ -63,7 +63,8 @@ const generateGrid = chromosomeNum => {
       type: 'line',
       line: {
         color: colors.darkblue_text,
-        opacity: 0.75
+        opacity: 0.75,
+        width: 1
       }
     }
     shapes.push(line)
@@ -111,20 +112,34 @@ function SegmentationPlot(props) {
 
   const layout = {
     autosize: true,
-    height: 450,
+    height: 500,
     hovermode: 'closest',
     bargap: 0,
     barmode: 'overlay',
     showlegend: false,
     margin: {
-      l: 50,
+      l: 75,
       r: 30,
-      t: 30,
+      t: 50,
       b: 75,
+    },
+    title: {
+      text: name,
+      font: {
+        family: '"Sen", sans-serif',
+        size: 20,
+        color: colors.darkblue_text
+      }
     },
     xaxis: {
       title: {
         text: 'Chromosome',
+        font: {
+          family: '"Sen", sans-serif',
+          size: 18,
+          color: colors.darkblue_text
+        },
+        standoff: 15
       },
       color: colors.darkblue_text,
       tickcolor: colors.darkblue_text,
@@ -132,17 +147,30 @@ function SegmentationPlot(props) {
       tickmode: 'array',
       tickvals: Array.from({ length: 23 }, (v, k) => k + 1),
       ticktext: Array.from({ length: 21 }, (v, k) => k + 1).concat(['X', 'Y']),
+      fixedrange: true,
     },
     yaxis : {
+      title: {
+        text: 'SD',
+        font: {
+          family: '"Sen", sans-serif',
+          size: 18,
+          color: colors.darkblue_text
+        },
+        standoff: 0
+      },
       fixedrange: true,
-      mirror: true,
+      color: colors.darkblue_text,
+      tickcolor: colors.darkblue_text,
+      linecolor: colors.darkblue_text,
+      tickmode: 'array',
+      tickvals: [-0.5, 0, 0.5],
     },
     shapes: generateGrid(23)
   }
   
   return (
     <StyledDiv>
-      <h3>{name}</h3>
       <Plot
         graphDiv="graph"
         config={{
