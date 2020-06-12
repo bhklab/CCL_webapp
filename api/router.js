@@ -4,6 +4,7 @@
 const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
+const path = require('path');
 // const uploadToOpenCPU = require('../helpers/uploadToOpenCPU');
 const { ErrorHandler } = require('../helpers/error');
 const responseData = require('../example-data/results.json');
@@ -16,6 +17,12 @@ router.get('/', (req, res) => {
   const output = responseData;
   output.fileName = 'test';
   res.status(200).json(responseData);
+});
+
+// send example file for download
+router.get('/exampleVCF', (req, res) => {
+  // eslint-disable-next-line prefer-template
+  res.download(`${path.join(__dirname, '../')}/test data/DU-40nM.vcf`, 'exampleVCF.vcf');
 });
 
 // assigns directory and creates it in the file system if it doesn't exist

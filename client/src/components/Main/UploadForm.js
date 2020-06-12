@@ -1,15 +1,16 @@
 import React, { useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-
+import { Popup } from 'semantic-ui-react';
 import colors from '../../styles/colors';
 import AnalysisContext from '../Context/AnalysisContext';
+import 'semantic-ui-css/semantic.min.css'
 
 const StyledForm = styled.div`
     background-color: ${colors.pink_main};
     border-radius: 25px;
-		width: 50%;
-		min-width: 300px;
+	width: 60%;
+	min-width: 300px;
     height: 100%;
     margin: 50px 0px 80px 0px;
     padding: 20px;
@@ -52,26 +53,37 @@ const StyledForm = styled.div`
 						};
 
 						&.disabled {
+							cursor: default;
 							background: #778899;
 							&:hover {
 								color: ${colors.pink_main};
 							}
 						}
-        }
+		}
+		.qmark {
+			color: ${colors.darkblue_bg};
+			font-size: 0.8em;
+			font-weight: bold;
+			align-self: flex-start;
+			cursor: pointer;
+		}
+		
         .choose-file {
             background: ${colors.darkblue_bg};
             color: white;
             cursor: pointer;
             padding: 8px 10px;
             border-radius:10px;
-						font-weight: 600;
+			font-weight: 600;
+			
         }
         .file-uploaded {
             color: ${colors.darkblue_text};
-						font-size: calc(0.5vw + 0.6em);
-						flex-grow: 1;
+			font-size: calc(0.5vw + 0.6em);
+			flex-grow: 1;
+			margin-left: 20px;
         }
-    }
+	}
 `;
 
 
@@ -90,6 +102,21 @@ function UploadForm() {
 				setAnalysisState({data: res.data, loading: false});
 			});
 	};
+
+	const getExampleVCF = () => {
+		axios.get('/api/exampleVCF')
+			.then((res) => {
+				const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+				const link = document.createElement('a');
+				link.href = downloadUrl;
+				link.setAttribute('download', 'exampleVCF.vcf'); //any other extension
+				document.body.appendChild(link);
+				link.click();
+				link.remove();
+
+			});
+
+	}
 
 	const onSubmit = (e) => {
 		e.preventDefault();
@@ -145,6 +172,13 @@ function UploadForm() {
 					name={file}
 				/>
 				<button type="button" className="choose-file" onClick={openFileOption}>Choose a File</button>
+				<Popup hoverable trigger={<div className="qmark">(?)</div>}>
+					<Popup.Content>
+						A VCF (variant call format) file is used to store gene sequence variations. 
+						Example downloadable file <a href="#" className="dl_link" onClick={getExampleVCF}>here</a>.
+					</Popup.Content>
+				</Popup>
+				
 				<div className="file-uploaded">
 					{file === null || file === undefined ? 'No file chosen' : file.name}
 				</div>
