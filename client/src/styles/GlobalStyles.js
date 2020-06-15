@@ -75,6 +75,39 @@ const GlobalStyles = createGlobalStyle`
         background:white;
         color: ${colors.darkblue_text};
     }
+    
+    .table-header {
+        display:flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .arrow-container {
+        display:flex;
+        flex-direction:column;
+        justify-content: space-between;
+        height: 13px;
+        img {
+            width: 7px !important;
+        }
+    }
+    .-sort-asc {
+        box-shadow:none !important;
+        .up-arrow {
+            opacity:1;
+        }
+        .down-arrow {
+            opacity:0;
+        }
+    }
+    .-sort-desc {
+        box-shadow:none !important;
+        .up-arrow {
+            opacity:0;
+        }
+        .down-arrow {
+            opacity:1;
+        }
+    }
 
     #root {
         width: 100vw;

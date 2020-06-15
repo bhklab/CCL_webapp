@@ -7,6 +7,8 @@ import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
+import upArrow from '../../../images/utils/sort-up-arrow.png';
+import downArrow from '../../../images/utils/sort-down-arrow.png';
 
 // transforms fraction result data to the format readable by react table
 const transformFractionData = (obj) => {
@@ -31,7 +33,15 @@ function Fraction(props) {
   const headers = [];
   Object.keys(data).forEach(el => {
     columns.push({
-      Header: el,
+      Header: () => (
+        <span className="table-header">
+          {el}
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
       accessor: el,
     })
     headers.push({

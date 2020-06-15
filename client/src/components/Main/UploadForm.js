@@ -174,8 +174,9 @@ function UploadForm() {
 				<button type="button" className="choose-file" onClick={openFileOption}>Choose a File</button>
 				<Popup hoverable trigger={<div className="qmark">(?)</div>}>
 					<Popup.Content>
-						A VCF (variant call format) file is used to store gene sequence variations. 
-						Example downloadable file <a href="#" className="dl_link" onClick={getExampleVCF}>here</a>.
+					VCF’s are the text-file standards for presenting single-site genomic information. 
+					<br/>CCLid is tested on single sample VCFs generated from standard mutation callers such as samtools, varscan2, Mutect, and Mutect2.  
+					<p/>Example downloadable file <a href="#" className="dl_link" onClick={getExampleVCF}>here</a>.
 					</Popup.Content>
 				</Popup>
 				

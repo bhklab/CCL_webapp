@@ -7,43 +7,116 @@ import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
-
+import upArrow from '../../../images/utils/sort-up-arrow.png';
+import downArrow from '../../../images/utils/sort-down-arrow.png';
 
 const columns = [
   {
-    Header: 'Var1',
+    Header: () => (
+      <span className="table-header">
+        Var1
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'Var1',
   },
   {
-    Header: 'Var2',
+    Header: () => (
+      <span className="table-header">
+        Var2
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'Var2',
   },
   {
-    Header: 'baf',
+    Header: () => (
+      <span className="table-header">
+        baf
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'baf',
   },
   {
-    Header: 'baf.fit',
+    Header: () => (
+      <span className="table-header">
+        baf.fit
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'baffit',
   },
   {
-    Header: 'baf.p.fit',
+    Header: () => (
+      <span className="table-header">
+        baf.p.fit
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'bafpfit',
   },
   {
-    Header: 'p',
+    Header: () => (
+      <span className="table-header">
+        p
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'p',
   },
   {
-    Header: 'q',
+    Header: () => (
+      <span className="table-header">
+        q
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'q',
   },
   {
-    Header: 'z',
+    Header: () => (
+      <span className="table-header">
+        z
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: 'z',
   },
   {
-    Header: 'Row',
+    Header: () => (
+      <span className="table-header">
+        Row
+        <div className="arrow-container">
+          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+        </div>
+      </span>
+    ),
     accessor: '_row',
   },
 ]
