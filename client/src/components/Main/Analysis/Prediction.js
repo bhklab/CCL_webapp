@@ -176,6 +176,12 @@ function Prediction(props) {
       <ReactTable
         columns={columns}
         data={standardizedData}
+        defaultSorted={[
+          {
+            id: "p",
+            desc: false
+          }
+        ]}
         defaultPageSize={5}
       />
     </StyledAnalysisSection>

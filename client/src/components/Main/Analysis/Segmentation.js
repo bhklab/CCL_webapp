@@ -237,6 +237,12 @@ function Segmentation(props) {
         columns={columns}
         data={standardizedData}
         defaultPageSize={10}
+        defaultSorted={[
+          {
+            id: "chrom",
+            desc: false
+          }
+        ]}
       />
       {Object.entries(plotData).map(el => (
         <SegmentationPlot
