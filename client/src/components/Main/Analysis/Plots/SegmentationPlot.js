@@ -16,9 +16,6 @@ const StyledDiv = styled.div`
     }
 `;
 
-// barWidth is set to 0.5 becasuse 1 chromosome has 2 arms 
-const barWidth = 0.5
-
 // calculated band width based on arm length
 const addWidth = (data) => {
   const outputObj = {p: {}, q: {}}
@@ -35,18 +32,111 @@ const addWidth = (data) => {
   return outputObj
 } 
 
-// creates lines that represent segemntation mean
-const generateMeanLines = (data) => {
+const generatePlot = (data) => {
   const output = []
-  const traceBase = {
+  
+  // declaring arrays that will be used in trace generation later on
+  const xArraySD = []
+  const yArraySD = []
+  const baseArraySD = []
+  const hoverTextSD = []
+  const widthSD = []
+  const xArrayHighlight = []
+  const widthArrayHighlight = []
+ 
+  // common trace structure that can be reused
+  const traceMeanLine = {
     type: 'scatter',
     mode: 'lines',
     hoverinfo: 'skip',
     marker: {
       color: colors.darkblue_bg,
-      // line: {
-      //   color: colors.darkblue_text
-      // }
+    }
+  }
+  const traceSD = {
+    type: 'bar',
+    hoverinfo: 'text',
+    opacity: 0.5,
+    marker: {
+      color: colors.darkblue_bg
+    }
+  }
+  const traceHighlight = {
+    type: 'bar',
+    base: -1,
+    opacity: 0.5,
+    marker: {
+      color: colors.red_main
+    },
+    hoverinfo: 'skip'
+  }
+
+  Object.entries(data).forEach(arm => {
+    Object.entries(arm[1]).forEach(chrom => {
+      // checks chromosome arm to know what side of the bin the data should be visualized on
+      let positionCorrection
+      if (arm[0] === 'p') {
+        positionCorrection = -(1 - chrom[1].width) / 2
+      } else {
+        positionCorrection = (1 - chrom[1].width) / 2
+      }
+
+      // updates SD trace position info
+      yArraySD.push(2 * chrom[1].segsd)
+      baseArraySD.push(chrom[1].segmean - chrom[1].segsd)
+      hoverTextSD.push(`${chrom[1].segmean} (chromosome ${chrom[0]}, ${arm[0]} arm)`)
+      widthSD.push(chrom[1].width)
+
+      // x coordinates calculation for SD and mean line traces
+      let xPos
+      if (!Number.isNaN(parseInt(chrom[0]))) {
+        xPos = parseInt(chrom[0]) + positionCorrection
+        xArraySD.push(xPos)
+      }
+      if (chrom[0].toUpperCase() === 'X') {
+        xPos = 23 + positionCorrection
+        xArraySD.push(xPos)
+      }
+      if (chrom[0].toUpperCase() === 'Y') {
+        xPos = 24 + positionCorrection
+        xArraySD.push(xPos)
+      }
+
+      // adds individual mean lines as separate traces
+      output.push({ ...traceMeanLine, x: [xPos - chrom[1].width / 2, xPos + chrom[1].width / 2], y: [chrom[1].segmean, chrom[1].segmean], width: chrom[1].width })
+
+      // logic to update position of trace with highlighted bars
+      if (chrom[1].t >= 3) {
+        if (!Number.isNaN(parseInt(chrom[0]))) xArrayHighlight.push(parseInt(chrom[0]) + positionCorrection)
+        // 22 pairs of autosomes and 2 different sex chromosomes
+        if (chrom[0].toUpperCase() === 'X') xArrayHighlight.push(23 + positionCorrection)
+        if (chrom[0].toUpperCase() === 'Y') xArrayHighlight.push(24 + positionCorrection)
+        widthArrayHighlight.push(chrom[1].width)
+      }
+    })
+  })
+  // adds SD bar plot trace
+  output.push({...traceSD, x: xArraySD, y: yArraySD, base: baseArraySD, hovertext: hoverTextSD, width: widthSD})
+  // adds trace with highlighted bars
+  output.push({ 
+    ...traceHighlight,
+    x: xArrayHighlight,
+    // the bar runs from -1 to 1 on y axis
+    y: Array(xArrayHighlight.length).fill(2),
+    width: widthArrayHighlight
+  })
+  return output
+}
+
+// creates lines that represent segemntation mean
+const generateMeanLines = (data) => {
+  const output = []
+  const traceMeanLine = {
+    type: 'scatter',
+    mode: 'lines',
+    hoverinfo: 'skip',
+    marker: {
+      color: colors.darkblue_bg,
     }
   }
 
@@ -65,7 +155,7 @@ const generateMeanLines = (data) => {
       if (!Number.isNaN(parseInt(chrom[0]))) xPos = parseInt(chrom[0]) + positionCorrection
       if (chrom[0].toUpperCase() === 'X') xPos = 23 + positionCorrection
       if (chrom[0].toUpperCase() === 'Y') xPos = 24 + positionCorrection
-      output.push({ ...traceBase, x: [xPos - chrom[1].width / 2, xPos + chrom[1].width / 2], y: [chrom[1].segmean, chrom[1].segmean], width: chrom[1].width})
+      output.push({ ...traceMeanLine, x: [xPos - chrom[1].width / 2, xPos + chrom[1].width / 2], y: [chrom[1].segmean, chrom[1].segmean], width: chrom[1].width})
     })
 
   })
@@ -187,7 +277,7 @@ const generateGrid = data => {
       }
     }
     shapes.push(line)
-    xPos += barWidth * 2
+    xPos += 1 
   }
   return shapes
 }
@@ -196,12 +286,14 @@ function SegmentationPlot(props) {
   const { data, name } = props;
 
   const processedData = addWidth(data);
-  console.log(processedData);
-  const meanLayers = generateMeanLines(processedData)
-  const standardDeviationLayer = generateSDBars(processedData)
-  const highlightedLayer = generateHighlightedBars(processedData)
+  // const meanLayers = generateMeanLines(processedData)
+  // const standardDeviationLayer = generateSDBars(processedData)
+  // const highlightedLayer = generateHighlightedBars(processedData)
   // combines all layers together to be sent to plotly
-  const allLayers = [...meanLayers, standardDeviationLayer, highlightedLayer]
+  // const allLayers = [...meanLayers, standardDeviationLayer, highlightedLayer]
+  
+  // generates an array of all traces used in the plot
+  const allLayers = generatePlot(processedData) 
 
   // layout structure of the plot
   const layout = {
