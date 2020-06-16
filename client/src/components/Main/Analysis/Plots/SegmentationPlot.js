@@ -48,7 +48,6 @@ const generatePlot = (data) => {
   const traceMeanLine = {
     type: 'scatter',
     mode: 'lines',
-    hoverinfo: 'skip',
     marker: {
       color: colors.darkblue_bg,
     }
@@ -84,7 +83,7 @@ const generatePlot = (data) => {
       // updates SD trace position info
       yArraySD.push(2 * chrom[1].segsd)
       baseArraySD.push(chrom[1].segmean - chrom[1].segsd)
-      hoverTextSD.push(`${chrom[1].segmean} (chromosome ${chrom[0]}, ${arm[0]} arm)`)
+      hoverTextSD.push(`Mean: ${chrom[1].segmean}, SD: ${chrom[1].segsd} (chromosome ${chrom[0]}, ${arm[0]} arm)`)
       widthSD.push(chrom[1].width)
 
       // x coordinates calculation for SD and mean line traces
@@ -103,7 +102,14 @@ const generatePlot = (data) => {
       }
 
       // adds individual mean lines as separate traces
-      output.push({ ...traceMeanLine, x: [xPos - chrom[1].width / 2, xPos + chrom[1].width / 2], y: [chrom[1].segmean, chrom[1].segmean], width: chrom[1].width })
+      output.push({ 
+        ...traceMeanLine,
+        x: [xPos - chrom[1].width / 2, xPos + chrom[1].width / 2],
+        y: [chrom[1].segmean, chrom[1].segmean],
+        width: chrom[1].width,
+        hoverinfo: chrom[1].segsd ? 'skip' : 'text',
+        hovertext: `Mean: ${chrom[1].segmean || 0}, SD: ${chrom[1].segsd || 0} (chromosome ${chrom[0]}, ${arm[0]} arm)`
+      })
 
       // logic to update position of trace with highlighted bars
       if (chrom[1].t >= 3) {
