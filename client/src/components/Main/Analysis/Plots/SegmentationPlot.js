@@ -19,6 +19,22 @@ const StyledDiv = styled.div`
 // barWidth is set to 0.5 becasuse 1 chromosome has 2 arms 
 const barWidth = 0.5
 
+// calculated band width based on arm length
+const addWidth = (data) => {
+  const outputObj = {p: {}, q: {}}
+  // loops over q arms of the chromosome because they are always present unlinke p arms
+  Object.entries(data.q).forEach(chrom => {
+    const pLength = data.p[chrom[0]] ? data.p[chrom[0]].locend - data.p[chrom[0]].locstart : 0
+    const qLength = chrom[1].locend - chrom[1].locstart
+    const chromSize = pLength + qLength
+    const pRelativeSize = pLength / chromSize
+    const qRelativeSize = qLength / chromSize
+    outputObj.q[chrom[0]] = {...chrom[1], width:qRelativeSize }
+    if (data.p[chrom[0]]) outputObj.p[chrom[0]] = { ...data.p[chrom[0]], width: pRelativeSize}
+  })
+  return outputObj
+} 
+
 // creates lines that represent segemntation mean
 const generateMeanLines = (data) => {
   const output = []
@@ -35,41 +51,42 @@ const generateMeanLines = (data) => {
   }
 
   Object.entries(data).forEach(arm => {
-    // checks chromosome arm to know what side of the bin the data should be visualized on
-    let positionCorrection
-    if (arm[0] === 'p') {
-      positionCorrection = -barWidth / 2
-    } else {
-      positionCorrection = barWidth / 2
-    }
-
     Object.entries(arm[1]).forEach(chrom => {
+
+      // checks chromosome arm to know what side of the bin the data should be visualized on
+      let positionCorrection
+      if (arm[0] === 'p') {
+        positionCorrection = -(1 - chrom[1].width) / 2
+      } else {
+        positionCorrection = (1 - chrom[1].width) / 2
+      }
+
       let xPos
       if (!Number.isNaN(parseInt(chrom[0]))) xPos = parseInt(chrom[0]) + positionCorrection
       if (chrom[0].toUpperCase() === 'X') xPos = 23 + positionCorrection
       if (chrom[0].toUpperCase() === 'Y') xPos = 24 + positionCorrection
-      output.push({ ...traceBase, x: [xPos - barWidth / 2, xPos + barWidth / 2], y: [chrom[1].segmean, chrom[1].segmean]})
+      output.push({ ...traceBase, x: [xPos - chrom[1].width / 2, xPos + chrom[1].width / 2], y: [chrom[1].segmean, chrom[1].segmean], width: chrom[1].width})
     })
 
   })
-  console.log(output);
   return output
 }
 
 // creates bar structure for plotly to work with
 const generateSDBars = data => {
   const output = []
-  Object.entries(data).forEach(el => {
-    // checks chromosome arm to know what side of the bin the data should be visualized on
-    let positionCorrection
-    if (el[0] === 'p') {
-      positionCorrection = -barWidth / 2
-    } else {
-      positionCorrection = barWidth / 2
-    }
+  Object.entries(data).forEach(arm => {
+    Object.entries(arm[1]).forEach(chrom => {
 
-    Object.entries(el[1]).forEach(chrom => {
-      const row = { yPos: 2 * chrom[1].segsd, base: chrom[1].segmean - chrom[1].segsd, hoverText: `${chrom[1].segmean} (chromosome ${chrom[0]}, ${el[0]} arm)`}
+      // checks chromosome arm to know what side of the bin the data should be visualized on
+      let positionCorrection
+      if (arm[0] === 'p') {
+        positionCorrection = -(1 - chrom[1].width) / 2
+      } else {
+        positionCorrection = (1 - chrom[1].width) / 2
+      }
+
+      const row = { yPos: 2 * chrom[1].segsd, base: chrom[1].segmean - chrom[1].segsd, hoverText: `${chrom[1].segmean} (chromosome ${chrom[0]}, ${arm[0]} arm)`, width: chrom[1].width}
       // uses chromosome # to determine its relative position on the plot
       if (!Number.isNaN(parseInt(chrom[0]))) row.xPos = parseInt(chrom[0]) + positionCorrection
       if (chrom[0].toUpperCase() === 'X') row.xPos = 23 + positionCorrection
@@ -85,7 +102,7 @@ const generateSDBars = data => {
     y: output.map(el => el.yPos),
     hoverinfo: 'text',
     hovertext: output.map(el => el.hoverText),
-    width: barWidth,
+    width: output.map(el => el.width),
     base: output.map(el => el.base),
     opacity: 0.5,
     marker: {
@@ -99,22 +116,23 @@ const generateSDBars = data => {
 const generateHighlightedBars = (data) => {
   // generates xArray positions
   const xArray = []
+  const widthArray = []
   Object.entries(data).forEach(arm => {
-    // checks chromosome arm to know what side of the bin the data should be visualized on
-    let positionCorrection
-    if (arm[0] === 'p') {
-      positionCorrection = -barWidth / 2
-    } else {
-      positionCorrection = barWidth / 2
-    }
-
     Object.entries(arm[1]).forEach(chrom => {
       // bars are only being highlighted if t is 3 or above
       if (chrom[1].t >= 3) {
+        // checks chromosome arm to know what side of the bin the data should be visualized on
+        let positionCorrection
+        if (arm[0] === 'p') {
+          positionCorrection = -(1 - chrom[1].width) / 2
+        } else {
+          positionCorrection = (1 - chrom[1].width) / 2
+        }
         if (!Number.isNaN(parseInt(chrom[0]))) xArray.push(parseInt(chrom[0]) + positionCorrection)
         // 22 pairs of autosomes and 2 different sex chromosomes
         if (chrom[0].toUpperCase() === 'X') xArray.push(23 + positionCorrection)
         if (chrom[0].toUpperCase() === 'Y') xArray.push(24 + positionCorrection)
+        widthArray.push(chrom[1].width)
       }
     })
   })
@@ -126,7 +144,7 @@ const generateHighlightedBars = (data) => {
     // the bar runs from -1 to 1 on y axis
     y: Array(xArray.length).fill(2),
     base: -1,
-    width: barWidth,
+    width: widthArray,
     opacity: 0.5,
     marker: {
       color: colors.red_main
@@ -138,7 +156,6 @@ const generateHighlightedBars = (data) => {
 
 // creates bin structure for chromosomes, uses plotly shapes
 const generateGrid = data => {
-  console.log(data);
   const shapes = []
   let xPos = 0.5
 
@@ -177,9 +194,12 @@ const generateGrid = data => {
 
 function SegmentationPlot(props) {
   const { data, name } = props;
-  const meanLayers = generateMeanLines(data)
-  const standardDeviationLayer = generateSDBars(data)
-  const highlightedLayer = generateHighlightedBars(data)
+
+  const processedData = addWidth(data);
+  console.log(processedData);
+  const meanLayers = generateMeanLines(processedData)
+  const standardDeviationLayer = generateSDBars(processedData)
+  const highlightedLayer = generateHighlightedBars(processedData)
   // combines all layers together to be sent to plotly
   const allLayers = [...meanLayers, standardDeviationLayer, highlightedLayer]
 
