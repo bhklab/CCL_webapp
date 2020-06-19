@@ -80,9 +80,9 @@ function Segmentation(props) {
       Cell: props => {
         const { value } = props
         const cellLineUrl = cellLines[extractCellLine(value)]
-        return (
+        return cellLineUrl ? (
           <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://pharmacodb.pmgenomics.ca/cell_lines/${cellLineUrl}`}>{value}</a>
-        );
+        ) : <span>{value}</span>
       }
     },
     {
