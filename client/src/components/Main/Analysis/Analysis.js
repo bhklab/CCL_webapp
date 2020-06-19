@@ -56,7 +56,6 @@ function Analysis() {
       .catch(err => console.log(err))
   }, [])
 
-  console.log(cellLines);
   if (data && !loading) {
   const { fileName, fraction, pred, seg } = data;
   return (
