@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
+import axios from 'axios';
 
 import colors from '../../../styles/colors'
 import AnalysisContext from '../../Context/AnalysisContext';
@@ -47,6 +48,13 @@ const StyledAnalysis = styled.div`
 function Analysis() {
   const { analysisState } = useContext(AnalysisContext);
   const { data, loading } = analysisState
+
+  const [cellLines, setCellLines] = useState(null)
+  useEffect(() => {
+    axios.get('/api/cells')
+      .then(data => console.log(data))
+  }, [])
+
   if (data && !loading) {
   const { fileName, fraction, pred, seg } = data;
   return (

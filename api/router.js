@@ -5,6 +5,7 @@ const express = require('express');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 // const uploadToOpenCPU = require('../helpers/uploadToOpenCPU');
 const { ErrorHandler } = require('../helpers/error');
 const responseData = require('../example-data/results.json');
@@ -17,12 +18,6 @@ router.get('/', (req, res) => {
   const output = responseData;
   output.fileName = 'test';
   res.status(200).json(responseData);
-});
-
-// send example file for download
-router.get('/exampleVCF', (req, res) => {
-  // eslint-disable-next-line prefer-template
-  res.download(`${path.join(__dirname, '../')}/test data/DU-40nM.vcf`, 'exampleVCF.vcf');
 });
 
 // assigns directory and creates it in the file system if it doesn't exist
@@ -60,6 +55,12 @@ const deleteDataFile = (filePath) => {
   });
 };
 
+// send example file for download
+router.get('/exampleVCF', (req, res) => {
+  // eslint-disable-next-line prefer-template
+  res.download(`${path.join(__dirname, '../')}/test data/DU-40nM.vcf`, 'exampleVCF.vcf');
+});
+
 // route that handles vcf uploads and analysis
 router.post('/upload', upload.single('file'), (req, res) => {
   console.log('Received and saved file, running R analysis...');
@@ -86,30 +87,35 @@ router.post('/upload', upload.single('file'), (req, res) => {
   }
 });
 
-// // analysis with default vcf file
-// router.get('/upload', (req, res) => {
-// 	console.log('received request');
-// 	const script = path.join(__dirname, 'R', 'interface.R');
-// 	if (process.env.ENV === 'production') {
-// 		// calling R script to run CCLid analysis
-// 		R(script)
-// 			.data('/usr/local/lib/R/site-library/CCLWebInterface/extdata/a549.sample_id.vcf')
-// 			.call((err, d) => {
-// 				if (err) {
-// 					// analysis creates regular progress messages which are registered as errors by r-script
-// 					const buf = err.toString('utf8');
-// 					console.log('message', buf);
-// 				}
-// 				if (d && d.results) {
-// 					console.log('data', d);
-// 					res.status(200).json(d);
-// 				} else if (d) {
-// 					res.status(400).json({ message: 'Error processing the request' });
-// 				}
-// 			});
-// 	} else {
-// 		res.status(200).json(responseData);
-// 	}
-// });
+
+// retrieves list of cell lines from pharmacodb api
+router.get('/cells', (req, res) => {
+  axios.get('https://api.pharmacodb.ca/v1/cell_lines?all=true')
+    .then((response) => {
+      // processes cell ids and names to generate unique cell ids
+      // in a way that matches urls of cell line pages in PharmacoDB
+      const output = {};
+      const { data } = response;
+      const mapObj = {
+        '.': '_',
+        '(': '_',
+        ')': '_',
+        '-': '',
+        ';': '_',
+      };
+      data.forEach((el) => {
+        const uniqueId = `${el.name}_${el.id}_2019`
+          .replace(/[.]|[(]|[)]|[-]|[;]/g, (matched) => mapObj[matched])
+          .replace(' ', '')
+          .replace('__', '_');
+        output[el.name] = uniqueId;
+      });
+      res.status(200).json(output);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ error: 'Unable to retrieve cell line data' });
+    });
+});
 
 module.exports = router;
