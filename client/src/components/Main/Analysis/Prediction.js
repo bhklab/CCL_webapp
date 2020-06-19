@@ -7,119 +7,10 @@ import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
+import extractCellLine from '../../utils/extractCellLine';
 import upArrow from '../../../images/utils/sort-up-arrow.png';
 import downArrow from '../../../images/utils/sort-down-arrow.png';
 
-const columns = [
-  {
-    Header: () => (
-      <span className="table-header">
-        Var1
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'Var1',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        Var2
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'Var2',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        baf
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'baf',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        baf.fit
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'baffit',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        baf.p.fit
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'bafpfit',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        p
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'p',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        q
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'q',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        z
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'z',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        Row
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: '_row',
-  },
-]
 const headers = [
   {
     displayName: 'Var1',
@@ -160,9 +51,126 @@ const headers = [
 ]
 
 function Prediction(props) {
-  const { data, fileName } = props;
+  const { data, fileName, cellLines } = props;
   // removes '.' from R generated object
   const standardizedData = standardizeROutput(data);
+  const columns = [
+    {
+      Header: () => (
+        <span className="table-header">
+          Var1
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'Var1',
+      Cell: props => {
+        const { value } = props
+        const cellLineUrl = cellLines[extractCellLine(value)]
+         return (
+           <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://pharmacodb.pmgenomics.ca/cell_lines/${cellLineUrl}`}>{value}</a>
+          );
+      }
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          Var2
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'Var2',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          baf
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'baf',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          baf.fit
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'baffit',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          baf.p.fit
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'bafpfit',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          p
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'p',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          q
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'q',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          z
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'z',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          Row
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: '_row',
+    },
+  ]
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">

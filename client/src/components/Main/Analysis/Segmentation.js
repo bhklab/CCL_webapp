@@ -7,145 +7,12 @@ import ReactTable from 'react-table-6';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
+import extractCellLine from '../../utils/extractCellLine';
 import SegmentationPlot from './Plots/SegmentationPlot';
 
 import upArrow from '../../../images/utils/sort-up-arrow.png';
 import downArrow from '../../../images/utils/sort-down-arrow.png';
 
-const columns = [
-  {
-    Header: () => (
-      <span className="table-header">
-        ID
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'ID',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        Arm
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'arm',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        Chromosome
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'chrom',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        Locus Start
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'locstart',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        Locus End
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'locend',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        num.mark
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'nummark',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        seg.diff
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'segdiff',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        seg.mean
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'segmean',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        seg.sd
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'segsd',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        seg.z
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 'segz',
-  },
-  {
-    Header: () => (
-      <span className="table-header">
-        t
-        <div className="arrow-container">
-          <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-          <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-        </div>
-      </span>
-    ),
-    accessor: 't',
-  },
-]
 const headers = [
   {
     displayName: 'ID',
@@ -194,13 +61,154 @@ const headers = [
 ]
 
 function Segmentation(props) {
-  const { data, fileName } = props;
-  console.log(data);
+  const { data, fileName, cellLines } = props;
   // removes '.' from R generated object
-  const standardizedData = standardizeROutput(data);
+  
+
+  const columns = [
+    {
+      Header: () => (
+        <span className="table-header">
+          ID
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'ID',
+      Cell: props => {
+        const { value } = props
+        const cellLineUrl = cellLines[extractCellLine(value)]
+        return (
+          <a className="hover" target="_blank" rel="noopener noreferrer" href={`https://pharmacodb.pmgenomics.ca/cell_lines/${cellLineUrl}`}>{value}</a>
+        );
+      }
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          Arm
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'arm',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          Chromosome
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'chrom',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          Locus Start
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'locstart',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          Locus End
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'locend',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          num.mark
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'nummark',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          seg.diff
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'segdiff',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          seg.mean
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'segmean',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          seg.sd
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'segsd',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          seg.z
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 'segz',
+    },
+    {
+      Header: () => (
+        <span className="table-header">
+          t
+          <div className="arrow-container">
+            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
+            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
+          </div>
+        </span>
+      ),
+      accessor: 't',
+    },
+  ]
 
   const plotData = {}
-  console.log(standardizedData);
+  const standardizedData = standardizeROutput(data);
   standardizedData.forEach(el => {
     // reverse spread operator, 'data' object is 'el' but without ID
     const { ID, chrom, arm, ...data } = el

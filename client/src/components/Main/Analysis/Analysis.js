@@ -49,12 +49,14 @@ function Analysis() {
   const { analysisState } = useContext(AnalysisContext);
   const { data, loading } = analysisState
 
-  const [cellLines, setCellLines] = useState(null)
+  const [cellLines, setCellLines] = useState({})
   useEffect(() => {
     axios.get('/api/cells')
-      .then(data => console.log(data))
+      .then(resp => setCellLines(resp.data))
+      .catch(err => console.log(err))
   }, [])
 
+  console.log(cellLines);
   if (data && !loading) {
   const { fileName, fraction, pred, seg } = data;
   return (
@@ -62,15 +64,25 @@ function Analysis() {
         <h2 className="fileName">{fileName}</h2>
         <h3 className="analysis-header">Analysis Results</h3>
         <div className="container">
-          <Fraction data={fraction} fileName={fileName}/>
+          <Fraction 
+            data={fraction}
+            fileName={fileName}
+          />
         </div>
         <div className="container">
-          <Prediction data={pred} fileName={fileName}/>
+          <Prediction 
+            data={pred}
+            fileName={fileName}
+            cellLines={cellLines}
+          />
         </div>
         <div className="container">
-          <Segmentation data={seg} fileName={fileName}/>
+          <Segmentation 
+            data={seg} 
+            fileName={fileName}
+            cellLines={cellLines}
+          />
         </div>
-        
       </StyledAnalysis>
     ) 
   }

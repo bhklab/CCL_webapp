@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import colors from './colors';
+import transitions from './transitions';
 // import heroImg from '../images/cells-blue.jpg';
 import heroImg from '../images/dark-blue-red-filtered.jpg';
 
@@ -74,6 +75,15 @@ const GlobalStyles = createGlobalStyle`
     .ReactTable {
         background:white;
         color: ${colors.darkblue_text};
+
+        a {
+            color: ${colors.darkblue_text};
+            transition: ${transitions.main_trans};
+
+            &:hover {
+                color: ${colors.red_main};
+            }
+        }
     }
     
     .table-header {
