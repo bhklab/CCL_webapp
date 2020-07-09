@@ -7,14 +7,18 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
     refdir <- '/data/ccl-files/'
     tmpdir <- '/data/ccl-files/output'
     #vcfFile=file.path(sys.data, 'a549.sample_id.vcf')
+
+    
     
     ## Setup the tmp random identifier
-    fls <- list.files(tmp.dir, pattern="tmp1_.*rda")
+    fls <- list.files(tmpdir, pattern="tmp1_.*rda")
+    # fls <- c()
     ids <- as.integer(sapply(strsplit(unique(fls), split="\\."), function(i) i[[2]]))
     tmp.id <- 1
     while(tmp.id %in% ids){
       tmp.id <- ceiling(runif(n=1, min=0, max=1e6))
     }
+
 
     ##############
     #### MAIN ####
@@ -49,11 +53,11 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
     load(file.path(tmpdir, paste0("tmp2_pred.", tmp.id, ".rda")))  #Starts with 72Mb RES
 
     ## Cleanup:
-    genfiles <- list.files(tmp.dir)
+    genfiles <- list.files(tmpdir)
     if(all(c(paste0("seg.", tmp.id, ".json"), 
              paste0("drift.", tmp.id, ".json"), 
              paste0("pred.", tmp.id, ".json")) %in% genfiles)){
-      setwd(tmp.dir)
+      setwd(tmpdir)
       file.remove(c(paste0('tmp1_vcf_all.', tmp.id, '.rda'), 
                     paste0('tmp2_pred.', tmp.id, '.rda'),
                     paste0('tmp3_drift_vcf.', tmp.id, '.rda'), 
@@ -72,10 +76,11 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
 
 # receiving path data from r-script npm module of nodejs server
 filePath <- input[[1]]
+# web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')
 
 tryCatch({
     web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')
-}, error = function() {
+}, error = function(err) {
     errorOutput <- list(
       "error"=TRUE,
       "message"="Error analysing vcf file"
