@@ -14,13 +14,13 @@ const callR = (filePath) => new Promise((resolve, reject) => {
 				console.log('message', buf);
 			}
 			if (d && d.results) {
-				console.log('data', d);
+				console.log('Data received');
 				resolve({ code: 200, output: d });
 			} else if (d && d.error) {
-				console.log(d);
+				console.log('Data Error ', d);
 				reject({ code: 500, error: d.message });
 			} else if (d) {
-				console.log(d);
+				console.log('Data but no results', d);
 				reject({ code: 500, error: 'Uknown error occurred' });
 			}
 		});

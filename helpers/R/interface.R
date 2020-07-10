@@ -75,8 +75,10 @@ web_interface <- function(refdir=NULL, vcfFile=NULL, bin.size=500000,
 }
 
 # receiving path data from r-script npm module of nodejs server
-filePath <- input[[1]]
+# filePath <- input[[1]]
 # web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')
+
+filePath <- '/var/www/html/CCL_webapp/test_data/DU-40nM.vcf'
 
 tryCatch({
     web_interface(vcfFile=filePath, outdir='/data/ccl-files/output')

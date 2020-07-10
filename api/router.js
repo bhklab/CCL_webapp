@@ -73,6 +73,7 @@ router.post('/upload', upload.single('file'), (req, res) => {
 			.then((data) => {
 				const { output } = data;
 				output.fileName = originalname;
+				console.log('Response is supposed to be sent');
 				res.status(data.code).json(output);
 				deleteDataFile(filePath);
 			})
