@@ -63,6 +63,7 @@ router.get('/exampleVCF', (req, res) => {
 
 // route that handles vcf uploads and analysis
 router.post('/upload', upload.single('file'), (req, res) => {
+	req.setTimeout(500000);
 	// gets uploaded file location
 	const filePath = req.file.path;
 	// gets original file name
