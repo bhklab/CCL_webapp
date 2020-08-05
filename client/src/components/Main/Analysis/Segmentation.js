@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
+import { Popup } from 'semantic-ui-react';
 
 // import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
@@ -15,11 +16,11 @@ import downArrow from '../../../images/utils/sort-down-arrow.png';
 
 const headers = [
   {
-    displayName: 'ID',
+    displayName: 'Cell line ID',
     id: 'ID',
   },
   {
-    displayName: 'Arm',
+    displayName: 'Chromosome Arm',
     id: 'arm',
   },
   {
@@ -35,41 +36,32 @@ const headers = [
     id: 'locend',
   },
   {
-    displayName: 'num.mark',
+    displayName: '# of SNPs',
     id: 'nummark',
   },
   {
-    displayName: 'seg.diff',
-    id: 'segdiff',
-  },
-  {
-    displayName: 'seg.mean',
+    displayName: 'Segment Diff',
     id: 'segmean',
   },
   {
-    displayName: 'sed.sd',
+    displayName: 'Segment SD',
     id: 'segsd',
   },
   {
-    displayName: 'seg.z',
+    displayName: 'Segment Z',
     id: 'segz',
-  },
-  {
-    displayName: 't',
-    id: 't',
-  },
+  }
 ]
 
 function Segmentation(props) {
   const { data, fileName, cellLines } = props;
   // removes '.' from R generated object
   
-
   const columns = [
     {
       Header: () => (
         <span className="table-header">
-          ID
+          Cell line ID
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -88,7 +80,7 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          Arm
+          Chromosome Arm
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -112,7 +104,11 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          Locus Start
+          <Popup hoverable trigger={<span>Locus Start</span>}>
+            <Popup.Content>
+              Genomic start position of BAF segment
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -124,7 +120,11 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          Locus End
+          <Popup hoverable trigger={<span>Locus End</span>}>
+            <Popup.Content>
+              Genomic end position of BAF segment
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -136,7 +136,11 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          num.mark
+          <Popup hoverable trigger={<span># of SNPs</span>}>
+            <Popup.Content>
+              Number of SNPs populating segment
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -148,19 +152,11 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          seg.diff
-          <div className="arrow-container">
-            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-          </div>
-        </span>
-      ),
-      accessor: 'segdiff',
-    },
-    {
-      Header: () => (
-        <span className="table-header">
-          seg.mean
+          <Popup hoverable trigger={<span>Segment Diff</span>}>
+            <Popup.Content>
+              Distance between the BAF segments from input compared to the reference (ID) cell lines
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -172,7 +168,11 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          seg.sd
+          <Popup hoverable trigger={<span>Segment SD</span>}>
+            <Popup.Content>
+              Standard deviation of BAF distance for the SNPs populating the segment
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -184,7 +184,11 @@ function Segmentation(props) {
     {
       Header: () => (
         <span className="table-header">
-          seg.z
+          <Popup hoverable trigger={<span>Segment Z</span>}>
+            <Popup.Content>
+              Z-score of BAF segment difference between input compared to reference (ID) cell lines
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -192,19 +196,7 @@ function Segmentation(props) {
         </span>
       ),
       accessor: 'segz',
-    },
-    {
-      Header: () => (
-        <span className="table-header">
-          t
-          <div className="arrow-container">
-            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-          </div>
-        </span>
-      ),
-      accessor: 't',
-    },
+    }
   ]
 
   const plotData = {}
@@ -219,22 +211,16 @@ function Segmentation(props) {
     if (!plotData[ID]) plotData[ID] = {}
     if (!plotData[ID][arm]) plotData[ID][arm] = {}
     plotData[ID][arm][chromosome] = data
-    // if (!plotData[ID]) {
-    //   if (arm === 'p') {
-
-    //   } else {
-
-    //   }
-    //   plotData[ID] = [data]
-    // } else {
-    //   plotData[ID].push(data)
-    // }
   })
   console.log(plotData);
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">
-        <h3>Segmentation</h3>
+        <Popup hoverable trigger={<h3>Segmentation</h3>}>
+          <Popup.Content>
+            Segmentation of BAF segments when compared between isogenic cell lines
+          </Popup.Content>
+        </Popup>
         <DownloadButton
           data={standardizedData}
           headers={headers}
