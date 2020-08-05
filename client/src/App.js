@@ -18,7 +18,6 @@ const App = () => {
         <div className="App">
             <Normalize />
             <GlobalStyles />
-            {/* <TopNav /> */}
             <Home />
         </div>
     );

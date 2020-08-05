@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
+import { Popup } from 'semantic-ui-react';
 
 import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
@@ -52,7 +53,11 @@ function Fraction(props) {
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">
-        <h3>Fraction</h3>
+        <Popup hoverable trigger={<h3>Fraction</h3>}>
+          <Popup.Content>
+            Fraction of the genome that is drifted based on a z-score greater than X
+          </Popup.Content>
+        </Popup>
         <DownloadButton
           data={standardizedData}
           headers={headers}

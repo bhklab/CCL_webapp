@@ -63,16 +63,16 @@ function Analysis() {
         <h2 className="fileName">{fileName}</h2>
         <h3 className="analysis-header">Analysis Results</h3>
         <div className="container">
-          <Fraction 
-            data={fraction}
-            fileName={fileName}
-          />
-        </div>
-        <div className="container">
-          <Prediction 
+          <Prediction
             data={pred}
             fileName={fileName}
             cellLines={cellLines}
+          />
+        </div>
+        <div className="container">
+          <Fraction 
+            data={fraction}
+            fileName={fileName}
           />
         </div>
         <div className="container">

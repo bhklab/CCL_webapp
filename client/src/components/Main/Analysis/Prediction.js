@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
+import { Popup } from 'semantic-ui-react';
 
 import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
@@ -13,41 +14,33 @@ import downArrow from '../../../images/utils/sort-down-arrow.png';
 
 const headers = [
   {
-    displayName: 'Var1',
+    displayName: 'CCL ID',
     id: 'Var1',
   },
   {
-    displayName: 'Var2',
+    displayName: 'Input ID',
     id: 'Var2',
   },
   {
-    displayName: 'baf',
+    displayName: 'BAF',
     id: 'baf',
   },
   {
-    displayName: 'baf.fit',
+    displayName: 'BAF',
     id: 'baffit',
   },
   {
-    displayName: 'baf.p.fit',
+    displayName: 'Classification',
     id: 'bafpfit',
   },
   {
-    displayName: 'p',
+    displayName: 'BAF',
     id: 'p',
   },
   {
-    displayName: 'q',
+    displayName: 'BAF',
     id: 'q',
-  },
-  {
-    displayName: 'z',
-    id: 'z',
-  },
-  {
-    displayName: 'Row',
-    id: '_row',
-  },
+  }
 ]
 
 function Prediction(props) {
@@ -58,7 +51,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          Var1
+          <Popup hoverable trigger={<span>CCL ID</span>}>
+            <Popup.Content>
+              Reference cell line identity
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -77,7 +74,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          Var2
+          <Popup hoverable trigger={<span>Input ID</span>}>
+            <Popup.Content>
+              Input sample cell line
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -89,7 +90,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          baf
+          <Popup hoverable trigger={<span>BAF</span>}>
+            <Popup.Content>
+              Cumulative euclidean distance between the BAFs for all SNPs in common between input and reference cell lines
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -101,7 +106,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          baf.fit
+          <Popup hoverable trigger={<span>BAF</span>}>
+            <Popup.Content>
+              Logistic regression predicted probability of nonmatching genotypes (NM)
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -113,7 +122,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          baf.p.fit
+          <Popup hoverable trigger={<span>Classification</span>}>
+            <Popup.Content>
+              Binary classifier, either being matching genotypes (M) or nonmatching (NM)
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -125,7 +138,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          p
+          <Popup hoverable trigger={<span>BAF</span>}>
+            <Popup.Content>
+              p-value assigned from logistic regression
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -137,7 +154,11 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          q
+          <Popup hoverable trigger={<span>BAF</span>}>
+            <Popup.Content>
+              FDR corrected p-value
+            </Popup.Content>
+          </Popup>
           <div className="arrow-container">
             <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
             <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
@@ -145,36 +166,16 @@ function Prediction(props) {
         </span>
       ),
       accessor: 'q',
-    },
-    {
-      Header: () => (
-        <span className="table-header">
-          z
-          <div className="arrow-container">
-            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-          </div>
-        </span>
-      ),
-      accessor: 'z',
-    },
-    {
-      Header: () => (
-        <span className="table-header">
-          Row
-          <div className="arrow-container">
-            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-          </div>
-        </span>
-      ),
-      accessor: '_row',
-    },
+    }
   ]
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">
-        <h3>Prediction</h3>
+        <Popup hoverable trigger={<h3>Prediction</h3>}>
+          <Popup.Content>
+            Top predicted cell lines identities based on a logistic regression trained on the distance between B-allele frequencies
+            </Popup.Content>
+        </Popup>
         <DownloadButton
           data={standardizedData}
           headers={headers}
