@@ -24,66 +24,58 @@ const StyledForm = styled.div`
 	}
 
 	.main-submit {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			font-family: 'Open Sans', sans-serif;
-			font-size: calc(0.5vw + 0.5em);
-			
-			.input {
-					display:none;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-family: 'Open Sans', sans-serif;
+		font-size: calc(0.5vw + 0.5em);
+		
+		.input {
+				display:none;
+		}
+		
+		button {
+			background: ${colors.darkblue_bg};
+			color: white;
+			border: none;
+			cursor: pointer;
+			padding: 8px 10px;
+			border-radius:10px;
+			font-weight: 600;
+			outline: none;
+			transition: all ease-out 0.25s;
+			margin: 0 5px;
+			min-height: 40px;
+
+			&:hover {
+				color: ${colors.pink_main};
+				background: ${colors.darkblue_text};
+			};
+
+			&.disabled {
+				cursor: default;
+				background: #778899;
+				&:hover {
+					color: ${colors.pink_main};
+				}
 			}
-			button {
-					background: ${colors.darkblue_bg};
-					color: white;
-					border: none;
-					cursor: pointer;
-					padding: 8px 10px;
-					border-radius:10px;
-					font-weight: 600;
-					outline: none;
-					transition: all ease-out 0.25s;
-					margin: 0 5px;
-					min-height: 40px;
-
-					&:hover {
-						color: ${colors.pink_main};
-						background: ${colors.darkblue_text};
-					};
-
-					&.disabled {
-						cursor: default;
-						background: #778899;
-						&:hover {
-							color: ${colors.pink_main};
-						}
-					}
-	}
-
-	.qmark {
-		color: ${colors.darkblue_bg};
-		font-size: 0.8em;
-		font-weight: bold;
-		align-self: flex-start;
-		cursor: pointer;
 	}
 	
-			.choose-file {
-					background: ${colors.darkblue_bg};
-					color: white;
-					cursor: pointer;
-					padding: 8px 10px;
-					border-radius:10px;
+	.choose-file {
+		background: ${colors.darkblue_bg};
+		color: white;
+		cursor: pointer;
+		padding: 8px 10px;
+		border-radius:10px;
 		font-weight: 600;
-		
-			}
-			.file-uploaded {
-					color: ${colors.darkblue_text};
+	}
+
+	.file-uploaded {
+		color: ${colors.darkblue_text};
 		font-size: calc(0.5vw + 0.6em);
 		flex-grow: 1;
 		margin-left: 20px;
-			}
 	}
 `;
 
@@ -98,17 +90,15 @@ const StyledDescription = styled.div`
 
 
 function UploadForm() {
-	const [ uploadResult, setUploadResult ] = useState({ data: null, loading: false, error: null });
 	const [ file, setFile ] = useState(null);
 	const fileRef = useRef(null);
 	const { analysisState, setAnalysisState } = useContext(AnalysisContext);
-	const { loading } = analysisState;
+	const { error } = analysisState;
 
 	const getExampleData = () => {
 		setAnalysisState({data: null, loading: true});
 		axios.get('/api')
 			.then((res) => {
-				// setUploadResult({ data: res.data, loading: false, error: null });
 				setAnalysisState({data: res.data, loading: false});
 			});
 	};
@@ -139,17 +129,14 @@ function UploadForm() {
 				.then((res) => {
 					setFile(null)
 					setAnalysisState({ data: res.data, loading: false });
-					// setUploadResult({ data: null, loading: false, error: null });
 				})
 				.catch((err) => {
 					console.log(err.response);
 					setFile(null)
 					if (err.response.status >= 400) {
 						const { message } = err.response.data;
-						// setUploadResult({ data: null, loading: false, error: message });
 						setAnalysisState({ data: null, loading: false, error: message });
 					} else {
-						// setUploadResult({ data: null, loading: false, error: 'Something went wrong' });
 						setAnalysisState({ data: null, loading: false, error: 'Something went wrong' });
 					}
 				});
@@ -197,7 +184,7 @@ function UploadForm() {
 				<br />CCLid is tested on single sample VCFs generated from standard mutation callers such as samtools, varscan2, Mutect, and Mutect2.
 				Example downloadable file <a href="#" className="dl_link" onClick={getExampleVCF}>here</a>.</p>
 			</StyledDescription>
-			{uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
+			{error ? <p className="error">{error}</p> : null }
 		</StyledForm>
 
 
