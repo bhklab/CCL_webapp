@@ -206,13 +206,11 @@ function Segmentation(props) {
     const { ID, chrom, arm, ...data } = el
     // changes chromosome to number or X or Y value 
     const chromosome = Number.isNaN(parseInt(chrom.replace('chr', ''))) ? chrom.replace('chr', '') : parseInt(chrom.replace('chr', ''))
-
     // creates new data structure suitable for the plotly plot
     if (!plotData[ID]) plotData[ID] = {}
     if (!plotData[ID][arm]) plotData[ID][arm] = {}
     plotData[ID][arm][chromosome] = data
   })
-  console.log(plotData);
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">

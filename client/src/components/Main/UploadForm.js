@@ -7,82 +7,92 @@ import AnalysisContext from '../Context/AnalysisContext';
 import 'semantic-ui-css/semantic.min.css'
 
 const StyledForm = styled.div`
-    background-color: ${colors.pink_main};
-    border-radius: 25px;
+	background-color: ${colors.pink_main};
+	border-radius: 25px;
 	width: 60%;
 	min-width: 300px;
-    height: 100%;
-    margin: 50px 0px 80px 0px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	height: 100%;
+	margin: 50px 0px 80px 0px;
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 
-    .error {
-        color: ${colors.red_error};
-        font-weight: 700;
-    }
+	.error {
+			color: ${colors.red_error};
+			font-weight: 700;
+	}
 
-    .main-submit {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-family: 'Open Sans', sans-serif;
-        font-size: calc(0.5vw + 0.5em);
-        
-        .input {
-            display:none;
-        }
-        button {
-            background: ${colors.darkblue_bg};
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 8px 10px;
-            border-radius:10px;
-						font-weight: 600;
-						outline: none;
-						transition: all ease-out 0.25s;
-						margin: 0 5px;
-						min-height: 40px;
+	.main-submit {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-family: 'Open Sans', sans-serif;
+			font-size: calc(0.5vw + 0.5em);
+			
+			.input {
+					display:none;
+			}
+			button {
+					background: ${colors.darkblue_bg};
+					color: white;
+					border: none;
+					cursor: pointer;
+					padding: 8px 10px;
+					border-radius:10px;
+					font-weight: 600;
+					outline: none;
+					transition: all ease-out 0.25s;
+					margin: 0 5px;
+					min-height: 40px;
 
+					&:hover {
+						color: ${colors.pink_main};
+						background: ${colors.darkblue_text};
+					};
+
+					&.disabled {
+						cursor: default;
+						background: #778899;
 						&:hover {
 							color: ${colors.pink_main};
-							background: ${colors.darkblue_text};
-						};
-
-						&.disabled {
-							cursor: default;
-							background: #778899;
-							&:hover {
-								color: ${colors.pink_main};
-							}
 						}
-		}
-		.qmark {
-			color: ${colors.darkblue_bg};
-			font-size: 0.8em;
-			font-weight: bold;
-			align-self: flex-start;
-			cursor: pointer;
-		}
+					}
+	}
+
+	.qmark {
+		color: ${colors.darkblue_bg};
+		font-size: 0.8em;
+		font-weight: bold;
+		align-self: flex-start;
+		cursor: pointer;
+	}
+	
+			.choose-file {
+					background: ${colors.darkblue_bg};
+					color: white;
+					cursor: pointer;
+					padding: 8px 10px;
+					border-radius:10px;
+		font-weight: 600;
 		
-        .choose-file {
-            background: ${colors.darkblue_bg};
-            color: white;
-            cursor: pointer;
-            padding: 8px 10px;
-            border-radius:10px;
-			font-weight: 600;
-			
-        }
-        .file-uploaded {
-            color: ${colors.darkblue_text};
-			font-size: calc(0.5vw + 0.6em);
-			flex-grow: 1;
-			margin-left: 20px;
-        }
+			}
+			.file-uploaded {
+					color: ${colors.darkblue_text};
+		font-size: calc(0.5vw + 0.6em);
+		flex-grow: 1;
+		margin-left: 20px;
+			}
+	}
+`;
+
+const StyledDescription = styled.div`
+	margin-top: 10px;
+	padding-top: 5px;
+	border-top: 2px solid ${colors.darkblue_text};
+	p {
+		color: ${colors.darkblue_text}
 	}
 `;
 
@@ -171,21 +181,22 @@ function UploadForm() {
 					onChange={onChange}
 					name={file}
 				/>
-				<button type="button" className="choose-file" onClick={openFileOption}>Choose a File</button>
-				<Popup hoverable trigger={<div className="qmark">(?)</div>}>
-					<Popup.Content>
-					VCF’s are the text-file standards for presenting single-site genomic information. 
-					<br/>CCLid is tested on single sample VCFs generated from standard mutation callers such as samtools, varscan2, Mutect, and Mutect2.  
-					<p/>Example downloadable file <a href="#" className="dl_link" onClick={getExampleVCF}>here</a>.
-					</Popup.Content>
-				</Popup>
-				
+				<button type="button" className="choose-file" onClick={openFileOption}>Choose VCF File</button>
 				<div className="file-uploaded">
 					{file === null || file === undefined ? 'No file chosen' : file.name}
 				</div>
 				<button type="submit" onSubmit={onSubmit} disabled={!file} className={!file ?'disabled' : null}>Analyze</button>
-				<button type="button" onClick={getExampleData}>Test</button>
+				<Popup hoverable trigger={<button type="button" onClick={getExampleData}>Test</button>}>
+					<Popup.Content>
+						<p>Provides example analysis output to showcase CCLid functionality</p>
+					</Popup.Content>
+				</Popup>
 			</form>
+			<StyledDescription>
+				<p>VCF’s are the text-file standards for presenting single-site genomic information.
+				<br />CCLid is tested on single sample VCFs generated from standard mutation callers such as samtools, varscan2, Mutect, and Mutect2.
+				Example downloadable file <a href="#" className="dl_link" onClick={getExampleVCF}>here</a>.</p>
+			</StyledDescription>
 			{uploadResult.error ? <p className="error">{uploadResult.error}</p> : null }
 		</StyledForm>
 
