@@ -2,8 +2,16 @@ import React, { useMemo } from 'react';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
 import { Popup } from 'semantic-ui-react';
+import colors from '../../../styles/colors';
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
+
+const zScoreStyling = 
+{
+  style: {
+    background: colors.highlight,
+  }
+}
 
 // transforms fraction result data to the format readable by react table and adds z-score
 const transformFractionData = (obj) => {
@@ -31,6 +39,8 @@ const generateHeadersColumns = (data) => {
       </span>
     ),
     accessor: 'zScore',
+    getProps: () => zScoreStyling,
+    getHeaderProps: () => zScoreStyling
   }];
   const headers = [{
     displayName: 'z-score',
@@ -78,6 +88,18 @@ function Fraction(props) {
         defaultPageSize={4}
         showPagination={false}
         sortable={false}
+        getTdProps={(state, rowInfo, column) => {
+          console.log(state, rowInfo, column);
+          if(column.id === 'zScore') {
+            return {
+              style: {
+                backgroundcolor: 'gray'
+              }
+            }
+          }
+          return {}
+         }
+        }
       />
     </StyledAnalysisSection>
   )
