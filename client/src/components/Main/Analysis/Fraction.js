@@ -6,6 +6,7 @@ import colors from '../../../styles/colors';
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
 
+// styling for the first column
 const zScoreStyling = 
 {
   style: {
@@ -73,7 +74,8 @@ function Fraction(props) {
       <div className="analysis-wrapper">
         <Popup hoverable trigger={<h3>Fraction</h3>}>
           <Popup.Content>
-            Fraction of the genome that is drifted based on a z-score greater than X
+            <p><b>Table Description</b>: Fraction of the genome that is drifted based on a z-score greater than X.</p> 
+            <p><b>Column Description</b>: Each column corresponds to a matching cell line where the total fractions sum up to 1.  The fractions represented in each row is the fraction of the total genome that is drifted as estimated using a z-score method. For instance, a value of 0.901 in the first row of CCLE_A549 indicates that ~ 90.1% ( + 3.9%) of the genome is concordant between the input sample and thepredicted match. A total of 4.2% of the genome shows some evidence of genetic drift, and only 0.6% of the genome shows strong evidence of drift.</p>
           </Popup.Content>
         </Popup>
         <DownloadButton
@@ -88,18 +90,6 @@ function Fraction(props) {
         defaultPageSize={4}
         showPagination={false}
         sortable={false}
-        getTdProps={(state, rowInfo, column) => {
-          console.log(state, rowInfo, column);
-          if(column.id === 'zScore') {
-            return {
-              style: {
-                backgroundcolor: 'gray'
-              }
-            }
-          }
-          return {}
-         }
-        }
       />
     </StyledAnalysisSection>
   )
