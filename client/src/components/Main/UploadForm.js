@@ -113,9 +113,7 @@ function UploadForm() {
 				document.body.appendChild(link);
 				link.click();
 				link.remove();
-
 			});
-
 	}
 
 	const onSubmit = (e) => {
@@ -125,7 +123,6 @@ function UploadForm() {
 			const data = new FormData();
 			data.append('file', file);
 			axios.post('/api/upload', data, {})
-			// axios.get('/api/upload')
 				.then((res) => {
 					setFile(null)
 					setAnalysisState({ data: res.data, loading: false });
