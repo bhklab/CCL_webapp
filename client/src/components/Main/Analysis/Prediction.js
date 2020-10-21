@@ -1,10 +1,8 @@
 import React from 'react';
-import styled from 'styled-components';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
 import { Popup } from 'semantic-ui-react';
 
-import colors from '../../../styles/colors';
 import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
@@ -26,7 +24,7 @@ const headers = [
     id: 'baf',
   },
   {
-    displayName: 'BAF',
+    displayName: 'BAF-fit',
     id: 'baffit',
   },
   {
@@ -34,11 +32,11 @@ const headers = [
     id: 'bafpfit',
   },
   {
-    displayName: 'BAF',
+    displayName: 'p-value',
     id: 'p',
   },
   {
-    displayName: 'BAF',
+    displayName: 'q-value',
     id: 'q',
   }
 ]
@@ -53,7 +51,7 @@ function Prediction(props) {
         <span className="table-header">
           <Popup hoverable trigger={<span>CCL ID</span>}>
             <Popup.Content>
-              Reference cell line identity
+              Reference cell line identity that is a match
             </Popup.Content>
           </Popup>
           <div className="arrow-container">
@@ -76,7 +74,7 @@ function Prediction(props) {
         <span className="table-header">
           <Popup hoverable trigger={<span>Input ID</span>}>
             <Popup.Content>
-              Input sample cell line
+              Input sample cell line extracted from the input VCF
             </Popup.Content>
           </Popup>
           <div className="arrow-container">
@@ -106,7 +104,7 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          <Popup hoverable trigger={<span>BAF</span>}>
+          <Popup hoverable trigger={<span>BAF-fit</span>}>
             <Popup.Content>
               Logistic regression predicted probability of nonmatching genotypes (NM)
             </Popup.Content>
@@ -138,9 +136,9 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          <Popup hoverable trigger={<span>BAF</span>}>
+          <Popup hoverable trigger={<span>p-value</span>}>
             <Popup.Content>
-              p-value assigned from logistic regression
+              p-value for a non-matching genotype assigned from logistic regression
             </Popup.Content>
           </Popup>
           <div className="arrow-container">
@@ -154,7 +152,7 @@ function Prediction(props) {
     {
       Header: () => (
         <span className="table-header">
-          <Popup hoverable trigger={<span>BAF</span>}>
+          <Popup hoverable trigger={<span>q-value</span>}>
             <Popup.Content>
               FDR corrected p-value
             </Popup.Content>
@@ -173,8 +171,9 @@ function Prediction(props) {
       <div className="analysis-wrapper">
         <Popup hoverable trigger={<h3>Prediction</h3>}>
           <Popup.Content>
-            Top predicted cell lines identities based on a logistic regression trained on the distance between B-allele frequencies
-            </Popup.Content>
+            <p><b>Table Description</b>: Top predicted cell lines identities based on a logistic regression trained on the distance between B-allele frequencies</p>
+            <p><b><em>checkForConcordance()</em></b>: will do an all-by-all sample comparison of genotypes. Using cell line metadata stored in meta.df, a logistic regression is trained to identify cell lines with matching (M) annotations and nonmatching (NM). The input sample is then compared to allother cell lines and a probability is assigned using this trained model.</p>
+          </Popup.Content>
         </Popup>
         <DownloadButton
           data={standardizedData}
