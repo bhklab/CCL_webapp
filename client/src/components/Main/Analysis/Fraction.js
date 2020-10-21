@@ -1,20 +1,16 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useMemo } from 'react';
 import 'react-table-6/react-table.css';
 import ReactTable from 'react-table-6';
 import { Popup } from 'semantic-ui-react';
-
-import colors from '../../../styles/colors';
-import standardizeROutput from '../../utils/standardizeROutput'
 import StyledAnalysisSection from './StyledAnalysisSection';
 import DownloadButton from '../../utils/DownloadButton';
-import upArrow from '../../../images/utils/sort-up-arrow.png';
-import downArrow from '../../../images/utils/sort-down-arrow.png';
 
-// transforms fraction result data to the format readable by react table
+// transforms fraction result data to the format readable by react table and adds z-score
 const transformFractionData = (obj) => {
   const output = [];
-  Object.entries(obj).forEach(el => {
+  // adds custom z-score values
+  const data = { zScore: ['0 < Z < 1', '1 < Z < 2', '2 < Z < 3', 'Z > 3'], ...obj }
+  Object.entries(data).forEach(el => {
     el[1].forEach((num, i) => {
       if (output.length < i + 1) {
         output.push({[el[0]]: num})
@@ -26,21 +22,25 @@ const transformFractionData = (obj) => {
   return output
 }
 
-function Fraction(props) {
-  const { data, fileName } = props;
-  // removes '.' from R generated object
-  const standardizedData = transformFractionData(data);
-  const columns = [];
-  const headers = [];
+// generates columns variable for react-table 6 and headers for the downloadable csv file
+const generateHeadersColumns = (data) => {
+  const columns = [{
+    Header: () => (
+      <span className="table-header">
+        z-score
+      </span>
+    ),
+    accessor: 'zScore',
+  }];
+  const headers = [{
+    displayName: 'z-score',
+    id: 'zScore',
+  }];
   Object.keys(data).forEach(el => {
     columns.push({
       Header: () => (
         <span className="table-header">
           {el}
-          <div className="arrow-container">
-            <img className="up-arrow arrow" alt="up-arrow" src={upArrow} />
-            <img className="down-arrow arrow" alt="down-arrow" src={downArrow} />
-          </div>
         </span>
       ),
       accessor: el,
@@ -50,6 +50,14 @@ function Fraction(props) {
       id: el,
     })
   })
+  return {headers, columns}
+}
+
+function Fraction(props) {
+  const { data, fileName } = props;
+  // removes '.' from R generated object
+  const standardizedData = useMemo(() => transformFractionData(data), [data]);
+  const { headers, columns } = useMemo(() => generateHeadersColumns(data), [data]);
   return (
     <StyledAnalysisSection>
       <div className="analysis-wrapper">
@@ -67,7 +75,9 @@ function Fraction(props) {
       <ReactTable
         columns={columns}
         data={standardizedData}
-        defaultPageSize={5}
+        defaultPageSize={4}
+        showPagination={false}
+        sortable={false}
       />
     </StyledAnalysisSection>
   )

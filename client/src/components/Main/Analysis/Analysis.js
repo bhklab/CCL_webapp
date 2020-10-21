@@ -52,7 +52,9 @@ function Analysis() {
   const [cellLines, setCellLines] = useState({})
   useEffect(() => {
     axios.get('/api/cells')
-      .then(resp => setCellLines(resp.data))
+      .then(resp => {
+        setCellLines(resp.data)
+      } )
       .catch(err => console.log(err))
   }, [])
 
