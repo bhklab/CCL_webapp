@@ -1,4 +1,4 @@
-# CCL_Authenticator Web Application
+# CCLID Web Application
 
 ## Setup Instructions
 
