@@ -97,31 +97,22 @@ router.post('/upload', upload.single('file'), (req, res) => {
 
 // retrieves list of cell lines from pharmacodb api
 router.get('/cells', (req, res) => {
-  axios.get('https://api.pharmacodb.ca/v1/cell_lines?all=true')
+  axios.get('https://pharmacodb.ca/graphql?query={cell_lines{id%20name%20cell_uid}}')
     .then((response) => {
       // processes cell ids and names to generate unique cell ids
       // in a way that matches urls of cell line pages in PharmacoDB
       const output = {};
-      const { data } = response;
-      const mapObj = {
-        '.': '_',
-        '(': '_',
-        ')': '_',
-        '-': '',
-        ';': '_',
-      };
+      const data = response.data.data.cell_lines;
+
       data.forEach((el) => {
-        const uniqueId = `${el.name}_${el.id}_2019`
-          .replace(/[.]|[(]|[)]|[-]|[;]/g, (matched) => mapObj[matched])
-          .replace(' ', '')
-          .replace('__', '_');
-        output[el.name] = uniqueId;
+        output[el.name] = el.cell_uid;
       });
+
       res.status(200).json(output);
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ error: 'Unable to retrieve cell line data' });
+      res.status(500).json({ error: `Unable to retrieve cell line data, ${err}` });
     });
 });
 
