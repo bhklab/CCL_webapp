@@ -1,3 +1,13 @@
+NameVirtualHost *:80
+NameVirtualHost cclid.ca:443
+
+<VirtualHost *:80> 
+  ServerName cclid.ca
+  ServerAlias www.cclid.ca
+  DocumentRoot /var/www/html/CCL_webapp/client/build
+  Redirect permanent / https://cclid.ca/
+</VirtualHost>
+
 <VirtualHost _default_:443>
 	SSLProxyEngine on
 	# The ServerName directive sets the request scheme, hostname and port that
@@ -8,7 +18,7 @@
 	# value is not decisive as it is used as a last resort host regardless.
 	# However, you must set it for any further virtual host explicitly.
 	ServerName cclid.ca
-
+	ServerAlias www.cclid.ca
 	ServerAdmin webmaster@localhost
 	DocumentRoot /var/www/html/CCL_webapp/client/build
 	
@@ -46,3 +56,5 @@
 	# after it has been globally disabled with "a2disconf".
 	#Include conf-available/serve-cgi-bin.conf
 </VirtualHost>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet
