@@ -102,16 +102,17 @@ router.get('/cells', (req, res) => {
       // processes cell ids and names to generate unique cell ids
       // in a way that matches urls of cell line pages in PharmacoDB
       const output = {};
-      const { data } = response.data;
+      const data = response.data.data.cell_lines;
 
       data.forEach((el) => {
         output[el.name] = el.cell_uid;
       });
+
       res.status(200).json(output);
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ error: 'Unable to retrieve cell line data' });
+      res.status(500).json({ error: `Unable to retrieve cell line data, ${err}` });
     });
 });
 
